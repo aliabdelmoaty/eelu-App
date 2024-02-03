@@ -2,11 +2,12 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:payment/core/utils/app_router.dart';
 import 'package:payment/core/utils/assets.dart';
 import 'package:payment/core/utils/styles.dart';
 import 'package:payment/core/widgets/custom_button.dart';
 import 'package:payment/core/widgets/custom_text_field.dart';
-import 'package:payment/features/login/presentation/view/login_screen.dart';
 
 class RegisterScreenBody extends StatelessWidget {
   const RegisterScreenBody({
@@ -89,10 +90,7 @@ class RegisterScreenBody extends StatelessWidget {
                     style: Styles.textStyle80014,
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const LoginScreen()));
+                       GoRouter.of(context).push(AppRouter.login);
                       })
               ])),
               SizedBox(

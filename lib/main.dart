@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:payment/features/register/presentation/view/register_screen.dart';
+import 'package:payment/core/utils/app_router.dart';
 import 'package:payment/generated/l10n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
        designSize: const Size(360, 690),
       minTextAdapt: true,
       splitScreenMode: true,
-      builder:(_ , child)=> MaterialApp(
+      builder:(_ , child)=> MaterialApp.router(
         debugShowCheckedModeBanner: false,
         localizationsDelegates: const [
           S.delegate,
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: S.delegate.supportedLocales,
-        home: const RegisterScreen(),
+         routerConfig: AppRouter.router,
       ),
     );
   }
