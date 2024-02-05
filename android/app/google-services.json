@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "383062960915",
+    "project_id": "eelu-3c8a8",
+    "storage_bucket": "eelu-3c8a8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:383062960915:android:8415e48c401ae2adc588e6",
+        "android_client_info": {
+          "package_name": "com.example.payment"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAoQ5EUGoaYKtkHo3QvK6hYAQXo827OoJw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
