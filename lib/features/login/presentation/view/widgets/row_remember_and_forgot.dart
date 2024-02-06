@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:payment/core/utils/styles.dart';
 
 class RowRememberAndForgot extends StatelessWidget {
@@ -23,9 +24,14 @@ class RowRememberAndForgot extends StatelessWidget {
           style: Styles.textStyle13,
         ),
         const Spacer(),
-        const Text(
-          'Forgot Password?',
-          style: Styles.textStyle13,
+        TextButton(
+          onPressed: () {
+            GoRouter.of(context).push('/forgot');
+          },
+          child: const Text(
+            'Forgot Password?',
+            style: Styles.textStyle13,
+          ),
         ),
       ],
     );

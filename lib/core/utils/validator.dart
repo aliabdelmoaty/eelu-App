@@ -8,6 +8,8 @@ class Validator {
     RegExp regex = RegExp('$pattern');
     if (!regex.hasMatch(value)) {
       return 'Enter Valid Email';
+    } else if (value.isEmpty) {
+      return 'Email is required';
     } else {
       return null;
     }
@@ -19,6 +21,8 @@ class Validator {
     final nameExp = RegExp(r'^[A-Za-z ]+$');
     if (!nameExp.hasMatch(value)) {
       return 'Please enter only alphabetical characters';
+    } else if (value.length < 3) {
+      return 'Name should be more than 3 characters';
     }
     return null;
   }
@@ -30,9 +34,11 @@ class Validator {
   }
 
   // Function to validate password
-String? validatePassword(String value) {
+  String? validatePassword(String value) {
     if (value.length < 8) {
       return 'Password should be more than 8 characters';
+    } else if (value.isEmpty) {
+      return 'Password is required';
     } else if (!RegExp(r'(?=.*[a-z])').hasMatch(value)) {
       return 'Password should contain at least one lowercase letter';
     } else if (!RegExp(r'(?=.*[A-Z])').hasMatch(value)) {
@@ -41,6 +47,16 @@ String? validatePassword(String value) {
       return 'Password should contain at least one number';
     } else if (!RegExp(r'(?=.*[!@#$%^&*(),.?":{}|<>])').hasMatch(value)) {
       return 'Password should contain at least one special character';
+    } else {
+      return null;
+    }
+  }
+
+  String? validatePasswordLogin(String value) {
+    if (value.length < 8) {
+      return 'Password should be more than 8 characters';
+    } else if (value.isEmpty) {
+      return 'Password is required';
     } else {
       return null;
     }

@@ -9,28 +9,41 @@ class CustomTextField extends StatelessWidget {
     super.key,
     required this.label,
     this.hint,
-     this.assetName, this.controller, this.validator,
+    this.assetName,
+    this.controller,
+    this.validator,
+    this.onPressed,
+    this.icon, this.isPassword,
   });
   final String label;
   final String? hint;
   final String? assetName;
   final TextEditingController? controller;
   final String? Function(String?)? validator;
+  final void Function()? onPressed;
+  final IconData? icon;
+  final bool? isPassword;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
       validator: validator,
+      obscureText: isPassword??false,
       decoration: InputDecoration(
         label: Text(label),
         labelStyle: Styles.textStyle70014,
         hintText: hint,
-        prefixIcon:assetName != null? Padding(
-          padding: EdgeInsets.all(12.0.r),
-          child: SvgPicture.asset(
-            assetName!,
-          ),
-        ):null,
+        suffix: icon != null
+            ? GestureDetector(onTap: onPressed, child: Icon(icon))
+            : null,
+        prefixIcon: assetName != null
+            ? Padding(
+                padding: EdgeInsets.all(12.0.r),
+                child: SvgPicture.asset(
+                  assetName!,
+                ),
+              )
+            : null,
         border: OutlineInputBorder(
           borderSide: const BorderSide(color: Colors.white),
           borderRadius: BorderRadius.all(Radius.circular(12.r)),

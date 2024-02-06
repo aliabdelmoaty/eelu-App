@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:payment/core/utils/assets.dart';
-import 'package:payment/core/utils/colors.dart';
+import 'package:payment/core/utils/fallback_loading.dart';
 import 'package:payment/core/utils/styles.dart';
 import 'package:payment/core/utils/validator.dart';
 import 'package:payment/core/widgets/custom_button.dart';
@@ -22,13 +22,14 @@ class LoginScreenBody extends StatelessWidget {
     final formKey = GlobalKey<FormState>();
     TextEditingController? email = TextEditingController();
     TextEditingController? password = TextEditingController();
+    var loginCubit = LoginCubit.get(context);
     return SingleChildScrollView(
       child: BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) {
           if (state is LoginSuccess) {
             GoRouter.of(context).go('/home');
           }
-          if(state is LoginError){
+          if (state is LoginError) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text(state.message),
               backgroundColor: Colors.red,
@@ -71,10 +72,15 @@ class LoginScreenBody extends StatelessWidget {
                     height: 20.h,
                   ),
                   CustomTextField(
+                      onPressed: () {
+                        loginCubit.changePasswordVisibility();
+                      },
+                      icon: loginCubit.suffix,
                       controller: password,
                       label: 'password',
+                      isPassword: loginCubit.isPassword,
                       validator: (value) =>
-                          Validator().validatePassword(value!),
+                          Validator().validatePasswordLogin(value!),
                       assetName: Assets.imagesPassword),
                   SizedBox(
                     height: 20.h,
@@ -89,27 +95,14 @@ class LoginScreenBody extends StatelessWidget {
                         text: 'Sign In',
                         onPressed: () {
                           if (formKey.currentState!.validate()) {
-                            LoginCubit.get(context)
-                                .login(id: email.text, password: password.text);
+                            loginCubit.login(
+                                id: email.text, password: password.text);
                           }
                         }),
-                    fallback: (context) => Center(
-                      child: Container(
-                          height: 50.h,
-                          width: 50.h,
-                          decoration: const ShapeDecoration(
-                            shape: CircleBorder(),
-                            color: ColorsApp.blue,
-                          ),
-                          child: const Center(
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                            ),
-                          )),
-                    ),
+                    fallback: (context) => const FallbackLoading(),
                   ),
                   SizedBox(
-                    height: 50.h,
+                    height: 10.h,
                   ),
                   const TextSpanLogin(),
                   SizedBox(
