@@ -64,6 +64,7 @@ class LoginScreenBody extends StatelessWidget {
                     height: 50.h,
                   ),
                   CustomTextField(
+                    keyboardType: TextInputType.emailAddress,
                       controller: email,
                       label: 'email',
                       validator: (value) => Validator().validateEmail(value!),
@@ -72,6 +73,7 @@ class LoginScreenBody extends StatelessWidget {
                     height: 20.h,
                   ),
                   CustomTextField(
+                    keyboardType: TextInputType.visiblePassword,
                       onPressed: () {
                         loginCubit.changePasswordVisibility();
                       },

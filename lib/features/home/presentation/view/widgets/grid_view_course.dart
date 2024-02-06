@@ -3,31 +3,39 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:payment/core/utils/app_router.dart';
 import 'package:payment/core/utils/styles.dart';
+import 'package:payment/features/home/presentation/data/model/item_course_model.dart';
 import 'package:payment/features/home/presentation/view/widgets/course_item.dart';
 
 class GridViewCourse extends StatelessWidget {
   const GridViewCourse({
     super.key,
+    required this.courses,
+    required this.dataCourse,
   });
-
+  final List<String> courses;
+  final List<ItemCourseModel> dataCourse;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 600.h,
+      height: 530.h,
       child: GridView.count(
+        physics: const BouncingScrollPhysics(),
         crossAxisCount: 2,
         crossAxisSpacing: 10.0,
-        mainAxisSpacing: 10.0,
+        mainAxisSpacing: 20.0,
         shrinkWrap: true,
-        children: List.generate(6, (index) {
+        children: List.generate(courses.length, (index) {
           return GestureDetector(
             onTap: () {
-              _showDoctorDialog(context);
+              _showDoctorDialog(context, dataCourse[index].doctors);
 
               // ignore: avoid_print
               print(index);
             },
-            child: const CourseItem(),
+            child: CourseItem(
+              courseName: courses[index],
+              image: dataCourse[index].image,
+            ),
           );
         }),
       ),
@@ -35,16 +43,10 @@ class GridViewCourse extends StatelessWidget {
   }
 }
 
+void _showDoctorDialog(BuildContext context, List<String>? doctorsName) {
+  List<String>? doctors = doctorsName;
 
-void _showDoctorDialog(BuildContext context) {
-  List<String> doctors = [
-    "Hanaa Abdelhady",
-    "Safinaz AbdelFattah",
-    "Yasser Abdelfattah",
-    "Doctor 4",
-  ];
-
-  String selectedDoctor = doctors[0];
+  String selectedDoctor = doctors![0];
 
   showDialog(
     context: context,
@@ -66,7 +68,7 @@ void _showDoctorDialog(BuildContext context) {
                     style: Styles.textStyle13,
                   ),
                   onTap: () {
-                    Navigator.pop(context, doctor);
+                    GoRouter.of(context).push(AppRouter.course);
                   },
                 ),
             ],

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:payment/features/course/presentation/view/widgets/expandable_list_lec.dart';
-import 'package:payment/features/course/presentation/view/widgets/expandable_list_video.dart';
+import 'package:payment/core/widgets/custom_expansion_tile.dart';
 
 class CourseScreen extends StatelessWidget {
   const CourseScreen({super.key});
@@ -28,16 +27,25 @@ class CourseScreenBody extends StatelessWidget {
     return SingleChildScrollView(
       child: Padding(
         padding: EdgeInsets.all(8.0.r),
-        child: Column(
+        child: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-                height: isExpanded ? 600.h : 50.h,
-                child: ExpandableListLec(
-                  isExpandedLec: isExpanded,
-                )),
-            // const SizedBox(height: 20),
-            SizedBox(height: 600.h, child: const ExpandableListVideos()),
+            CustomExpansionTile(
+              items: ['Lec 1', 'Lec 2'],
+              text: 'Lectures',
+            ),
+            SizedBox(height: 20),
+            CustomExpansionTile(
+              items: [
+                'Video 1',
+                'Video 2',
+                'Video 1',
+                'Video 2',
+                'Video 1',
+                'Video 2'
+              ],
+              text: 'Videos',
+            ),
           ],
         ),
       ),

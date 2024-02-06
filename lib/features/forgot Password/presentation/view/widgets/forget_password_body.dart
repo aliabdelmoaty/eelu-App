@@ -46,6 +46,7 @@ class ForgetPasswordBody extends StatelessWidget {
                     height: 200.h,
                   ),
                   CustomTextField(
+                    keyboardType: TextInputType.emailAddress,
                       controller: email,
                       assetName: Assets.imagesEmail,
                       validator: (value) => Validator().validateEmail(value!),

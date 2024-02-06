@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import 'package:payment/core/utils/styles.dart';
 
 class CourseItem extends StatelessWidget {
   const CourseItem({
     super.key,
+    this.courseName,
+    this.image,
   });
-
+  final String? courseName;
+  final String? image;
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -29,25 +33,33 @@ class CourseItem extends StatelessWidget {
             ],
           ),
         ),
-        Container(
-          width: 170.w,
-          height: 110.h,
-          decoration: ShapeDecoration(
-            color: Colors.black,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20.r),
-                topRight: Radius.circular(20.r),
+        if (image != null)
+          LottieBuilder.network(
+            image!,
+            width: 170.w,
+            height: 110.h,
+            fit: BoxFit.fitHeight,
+          ),
+        if (image == null)
+          Container(
+            width: 170.w,
+            height: 110.h,
+            decoration: ShapeDecoration(
+              color: Colors.black,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20.r),
+                  topRight: Radius.circular(20.r),
+                ),
               ),
             ),
           ),
-        ),
         Positioned(
           top: 115.h,
           left: 10.w,
           child: SizedBox(
             width: 160.w,
-            child: const Text('Introduction to Operation Research',
+            child: Text(courseName!,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: Styles.textStyle16),

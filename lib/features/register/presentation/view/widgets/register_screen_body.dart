@@ -1,5 +1,4 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -66,6 +65,7 @@ class RegisterScreenBody extends StatelessWidget {
                       height: 45.h,
                     ),
                     CustomTextField(
+                    keyboardType: TextInputType.name,
                       validator: (value) => Validator().validateName(value!),
                       controller: name,
                       label: 'Name',
@@ -75,6 +75,7 @@ class RegisterScreenBody extends StatelessWidget {
                       height: 20.h,
                     ),
                     CustomTextField(
+                    keyboardType: TextInputType.emailAddress,
                       validator: (value) => Validator().validateEmail(value!),
                       controller: email,
                       label: 'Email',
@@ -85,6 +86,7 @@ class RegisterScreenBody extends StatelessWidget {
                       height: 20.h,
                     ),
                     CustomTextField(
+                    keyboardType: TextInputType.number,
                       validator: (value) => Validator().validateID(value!),
                       controller: id,
                       label: 'Id',
@@ -95,6 +97,7 @@ class RegisterScreenBody extends StatelessWidget {
                       height: 20.h,
                     ),
                     CustomTextField(
+                    keyboardType: TextInputType.visiblePassword,
                       validator: (value) =>
                           Validator().validatePassword(value!),
                       controller: password,

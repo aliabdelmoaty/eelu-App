@@ -4,6 +4,7 @@ import 'package:payment/core/constant.dart';
 import 'package:payment/features/course/presentation/view/course_screen.dart';
 import 'package:payment/features/forgot%20Password/presentation/data/cubit/forgot_password_cubit.dart';
 import 'package:payment/features/forgot%20Password/presentation/view/forgot_password_screen.dart';
+import 'package:payment/features/home/presentation/data/cubit/home_cubit.dart';
 import 'package:payment/features/home/presentation/view/home_screen.dart';
 import 'package:payment/features/login/presentation/data/cubit/login_cubit.dart';
 import 'package:payment/features/login/presentation/view/login_screen.dart';
@@ -23,14 +24,17 @@ abstract class AppRouter {
   static final router = GoRouter(routes: [
     GoRoute(
       path: home,
-      builder: (context, state) => const HomeScreen(),
+      builder: (context, state) =>  BlocProvider(
+        create: (context) => HomeCubit()..getCourses()..getDataCourses(),
+        child: const HomeScreen(),
+      ),
     ),
     GoRoute(
       path: forgot,
-      builder: (context, state) =>  BlocProvider(
+      builder: (context, state) => BlocProvider(
         create: (context) => ForgotPasswordCubit(),
         child: const ForgotPasswordScreen(),
-        ),
+      ),
     ),
     GoRoute(
       path: login,
