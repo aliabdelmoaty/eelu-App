@@ -9,16 +9,18 @@ class CustomTextField extends StatelessWidget {
     super.key,
     required this.label,
     this.hint,
-     this.assetName, this.controller,
+     this.assetName, this.controller, this.validator,
   });
   final String label;
   final String? hint;
   final String? assetName;
   final TextEditingController? controller;
+  final String? Function(String?)? validator;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
+      validator: validator,
       decoration: InputDecoration(
         label: Text(label),
         labelStyle: Styles.textStyle70014,

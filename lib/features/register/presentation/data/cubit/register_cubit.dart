@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:payment/core/utils/cache_helper.dart';
 import 'package:payment/features/register/model/register_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -27,6 +28,7 @@ class RegisterCubit extends Cubit<RegisterState> {
       )
           .then((value) {
         createUser(email: email, uid: value.user!.uid, name: name, id: id);
+        CacheHelper.saveData(key: 'uid', value: value.user!.uid);
         emit(RegisterSuccess());
       }).catchError((e) {
         print(e);

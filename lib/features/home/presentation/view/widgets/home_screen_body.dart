@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:payment/core/utils/circle_avatar_profile.dart';
+import 'package:payment/core/widgets/circle_avatar_profile.dart';
 import 'package:payment/core/utils/styles.dart';
 import 'package:payment/features/home/presentation/view/widgets/grid_view_course.dart';
 

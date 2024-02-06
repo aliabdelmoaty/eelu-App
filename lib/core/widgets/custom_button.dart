@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:payment/core/utils/colors.dart';
 import 'package:payment/core/utils/styles.dart';
 
+
 class CustomButton extends StatelessWidget {
   const CustomButton({
     super.key,
@@ -47,3 +48,4 @@ class CustomButton extends StatelessWidget {
     );
   }
 }
+
