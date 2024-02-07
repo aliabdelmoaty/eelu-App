@@ -45,11 +45,12 @@ dependencies:
   go_router: ^13.1.0
   lottie: ^3.0.0
   shared_preferences: ^2.2.2
+  shimmer: ^3.0.0
   syncfusion_flutter_pdfviewer: ^24.2.4
-  youtube_player_flutter:
+  youtube_player_flutter: null
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1
-  flutter_lints: ^2.0.0
+  flutter_lints: ^3.0.1
   flutter_native_splash: ^2.3.10
   flutter_test:
     sdk: flutter
@@ -70,6 +71,9 @@ flutter_native_splash:
   image: assets/images/splash.png
   android: true
   ios: true
+  android_12:
+    color: "#2352A1"
+    image: assets/images/splash.png
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

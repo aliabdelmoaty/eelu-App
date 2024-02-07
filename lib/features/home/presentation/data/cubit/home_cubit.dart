@@ -47,28 +47,21 @@ class HomeCubit extends Cubit<HomeState> {
         }
         emit(GetDataCoursesSuccess());
       }).catchError((e) {
-        print(e.toString());
         emit(GetDataCoursesError(e: e.toString()));
       });
     } catch (e) {
-      print(e.toString());
       emit(GetDataCoursesError(e: e.toString()));
     }
   }
 
   Future<void> getDataUser() async {
     try {
-      print(token);
       emit(GetUserDataLoading());
       await db.collection('users').doc(token).get().then((value) {
-        print(value.exists);
-        print(value.data());
         userModel = RegisterModel.fromJson(value.data()!);
       });
-      print(userModel?.email.toString());
       emit(GetUserDataSuccess());
     } catch (e) {
-      print('error user:${e.toString()}');
       emit(GetUserDataError(e: e.toString()));
     }
   }

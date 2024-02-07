@@ -1,30 +1,30 @@
 part of 'home_cubit.dart';
 
-sealed class HomeState {}
+ class HomeState {}
 
-final class HomeInitial extends HomeState {}
-final class GetCoursesLoading extends HomeState {}
-final class GetCoursesSuccess extends HomeState {}
-final class GetCoursesError extends HomeState {
+ class HomeInitial extends HomeState {}
+ class GetCoursesLoading extends HomeState {}
+ class GetCoursesSuccess extends HomeState {}
+ class GetCoursesError extends HomeState {
   final String e;
 
   GetCoursesError({required this.e});
 }
-final class GetDataCoursesLoading extends HomeState {}
+ class GetDataCoursesLoading extends HomeState {}
 
-final class GetDataCoursesSuccess extends HomeState {}
+ class GetDataCoursesSuccess extends HomeState {}
 
-final class GetDataCoursesError extends HomeState {
+ class GetDataCoursesError extends HomeState {
   final String e;
 
   GetDataCoursesError({required this.e});
 }
 
-final class GetUserDataLoading extends HomeState {}
+ class GetUserDataLoading extends HomeState {}
 
-final class GetUserDataSuccess extends HomeState {}
+ class GetUserDataSuccess extends HomeState {}
 
-final class GetUserDataError extends HomeState {
+ class GetUserDataError extends HomeState {
   final String e;
 
   GetUserDataError({required this.e});

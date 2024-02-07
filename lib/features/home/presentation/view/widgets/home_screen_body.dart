@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:payment/core/utils/fallback_loading.dart';
 import 'package:payment/core/widgets/circle_avatar_profile.dart';
 import 'package:payment/core/utils/styles.dart';
 import 'package:payment/features/home/presentation/data/cubit/home_cubit.dart';
 import 'package:payment/features/home/presentation/view/widgets/grid_view_course.dart';
+import 'package:payment/features/home/presentation/view/widgets/loading_screen.dart';
 
 class HomeScreenBody extends StatelessWidget {
   const HomeScreenBody({super.key});
@@ -19,7 +19,9 @@ class HomeScreenBody extends StatelessWidget {
           child: BlocConsumer<HomeCubit, HomeState>(
             listener: (context, state) {},
             builder: (context, state) {
-              if (state is GetDataCoursesSuccess|| state is GetCoursesSuccess || state is GetUserDataSuccess) {
+              if (state is GetDataCoursesSuccess ||
+                  state is GetCoursesSuccess ||
+                  state is GetUserDataSuccess) {
                 var cubit = HomeCubit.get(context);
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,7 +47,7 @@ class HomeScreenBody extends StatelessWidget {
                   ],
                 );
               } else {
-                return const FallbackLoading();
+                return const LoadingScreen();
               }
             },
           ),

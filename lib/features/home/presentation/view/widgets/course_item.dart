@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
+import 'package:payment/core/utils/assets.dart';
 import 'package:payment/core/utils/styles.dart';
 
 class CourseItem extends StatelessWidget {
@@ -34,11 +35,22 @@ class CourseItem extends StatelessWidget {
           ),
         ),
         if (image != null)
-          LottieBuilder.network(
-            image!,
-            width: 170.w,
-            height: 110.h,
-            fit: BoxFit.fitHeight,
+          FutureBuilder<LottieComposition>(
+            future: NetworkLottie(image!).load(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Lottie.asset(Assets.imagesLoading);
+              } else if (snapshot.hasError) {
+                return const Center(child: Icon(Icons.error));
+              } else {
+                return Lottie(
+                  composition: snapshot.data!,
+                  width: 170.w,
+                  height: 110.h,
+                  fit: BoxFit.fitHeight,
+                );
+              }
+            },
           ),
         if (image == null)
           Container(
