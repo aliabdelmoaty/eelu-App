@@ -45,6 +45,8 @@ dependencies:
   go_router: ^13.1.0
   lottie: ^3.0.0
   shared_preferences: ^2.2.2
+  syncfusion_flutter_pdfviewer: ^24.2.4
+  youtube_player_flutter:
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1
   flutter_lints: ^2.0.0

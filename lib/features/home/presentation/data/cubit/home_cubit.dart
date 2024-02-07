@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:payment/core/constant.dart';
 import 'package:payment/features/home/presentation/data/model/course_model.dart';
 import 'package:payment/features/home/presentation/data/model/item_course_model.dart';
+import 'package:payment/features/register/model/register_model.dart';
 
 part 'home_state.dart';
 
@@ -12,7 +14,7 @@ class HomeCubit extends Cubit<HomeState> {
   List<String>? coursesName = [];
   var db = FirebaseFirestore.instance;
   List<ItemCourseModel>? itemCourseModel = [];
-
+  RegisterModel? userModel;
   static HomeCubit get(context) => BlocProvider.of(context);
 
   Future<void> getCourses() async {
@@ -35,7 +37,13 @@ class HomeCubit extends Cubit<HomeState> {
       emit(GetDataCoursesLoading());
       await db.collection('courses').get().then((value) {
         for (var element in value.docs) {
-          itemCourseModel?.add(ItemCourseModel?.fromJson(element.data()));
+          final Map<String, dynamic> data = element.data();
+          itemCourseModel?.add(ItemCourseModel.fromJson({
+            'image': data['image'],
+            'lectures': Map<String, String>.from(data['lectures'] ?? {}),
+            'videos': Map<String, String>.from(data['videos'] ?? {}),
+            'doctors': List<String>.from(data['doctors'] ?? []),
+          }));
         }
         emit(GetDataCoursesSuccess());
       }).catchError((e) {
@@ -45,6 +53,23 @@ class HomeCubit extends Cubit<HomeState> {
     } catch (e) {
       print(e.toString());
       emit(GetDataCoursesError(e: e.toString()));
+    }
+  }
+
+  Future<void> getDataUser() async {
+    try {
+      print(token);
+      emit(GetUserDataLoading());
+      await db.collection('users').doc(token).get().then((value) {
+        print(value.exists);
+        print(value.data());
+        userModel = RegisterModel.fromJson(value.data()!);
+      });
+      print(userModel?.email.toString());
+      emit(GetUserDataSuccess());
+    } catch (e) {
+      print('error user:${e.toString()}');
+      emit(GetUserDataError(e: e.toString()));
     }
   }
 }

@@ -20,4 +20,12 @@ final class GetDataCoursesError extends HomeState {
   GetDataCoursesError({required this.e});
 }
 
+final class GetUserDataLoading extends HomeState {}
 
+final class GetUserDataSuccess extends HomeState {}
+
+final class GetUserDataError extends HomeState {
+  final String e;
+
+  GetUserDataError({required this.e});
+}

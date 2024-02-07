@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:payment/core/constant.dart';
 import 'package:payment/core/utils/app_router.dart';
 import 'package:payment/core/utils/assets.dart';
 import 'package:payment/core/utils/fallback_loading.dart';
@@ -35,6 +36,10 @@ class RegisterScreenBody extends StatelessWidget {
             listener: (context, state) {
               if (state is RegisterSuccess) {
                 GoRouter.of(context).push(AppRouter.home);
+              } else if (state is RegisterError) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text(state.message),
+                ));
               }
             },
             builder: (context, state) {
@@ -65,7 +70,7 @@ class RegisterScreenBody extends StatelessWidget {
                       height: 45.h,
                     ),
                     CustomTextField(
-                    keyboardType: TextInputType.name,
+                      keyboardType: TextInputType.name,
                       validator: (value) => Validator().validateName(value!),
                       controller: name,
                       label: 'Name',
@@ -75,18 +80,18 @@ class RegisterScreenBody extends StatelessWidget {
                       height: 20.h,
                     ),
                     CustomTextField(
-                    keyboardType: TextInputType.emailAddress,
+                      keyboardType: TextInputType.emailAddress,
                       validator: (value) => Validator().validateEmail(value!),
                       controller: email,
                       label: 'Email',
-                      hint: '0000000@student.eelu.edu.eg',
+                      hint: '------*****@gmail.com',
                       assetName: Assets.imagesEmail,
                     ),
                     SizedBox(
                       height: 20.h,
                     ),
                     CustomTextField(
-                    keyboardType: TextInputType.number,
+                      keyboardType: TextInputType.number,
                       validator: (value) => Validator().validateID(value!),
                       controller: id,
                       label: 'Id',
@@ -97,7 +102,7 @@ class RegisterScreenBody extends StatelessWidget {
                       height: 20.h,
                     ),
                     CustomTextField(
-                    keyboardType: TextInputType.visiblePassword,
+                      keyboardType: TextInputType.visiblePassword,
                       validator: (value) =>
                           Validator().validatePassword(value!),
                       controller: password,
@@ -117,6 +122,7 @@ class RegisterScreenBody extends StatelessWidget {
                                   email: email.text,
                                   password: password.text,
                                   name: name.text,
+                                  image: image,
                                   id: int.parse(id.text),
                                 );
                               }
@@ -139,4 +145,3 @@ class RegisterScreenBody extends StatelessWidget {
     );
   }
 }
-

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:payment/core/utils/app_router.dart';
 import 'package:payment/core/utils/colors.dart';
 import 'package:payment/core/utils/styles.dart';
 
@@ -8,10 +9,15 @@ class CustomExpansionTile extends StatefulWidget {
   const CustomExpansionTile({
     super.key,
     required this.items,
-    required this.text,
+    required this.text,  this.url,  this.title,
   });
   final List<String>? items;
   final String text;
+  final List<String> ? url;
+  final List<String> ? title;
+
+
+  
   @override
   _CustomExpansionTileState createState() => _CustomExpansionTileState();
 }
@@ -55,7 +61,19 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      // GoRouter.of(context).push(AppRouter.login);
+                      if (widget.text == 'Videos') {
+                        GoRouter.of(context).push(AppRouter.video, extra: {
+                          'title': widget.title?[widget.items!.indexOf(item)],
+                          'urlVideo':
+                              widget.url?[widget.items!.indexOf(item)]
+                        });
+                      } else {
+                        GoRouter.of(context).push(AppRouter.pdfView, extra: {
+                          'title': widget.title?[widget.items!.indexOf(item)],
+                          'linkPdf':
+                              widget.url?[widget.items!.indexOf(item)]
+                        });
+                      }
                     },
                     child: const Icon(
                       Icons.visibility_outlined,

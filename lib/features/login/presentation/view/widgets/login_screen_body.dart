@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:payment/core/utils/app_router.dart';
 import 'package:payment/core/utils/assets.dart';
 import 'package:payment/core/utils/fallback_loading.dart';
 import 'package:payment/core/utils/styles.dart';
@@ -27,7 +28,7 @@ class LoginScreenBody extends StatelessWidget {
       child: BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) {
           if (state is LoginSuccess) {
-            GoRouter.of(context).go('/home');
+            GoRouter.of(context).go(AppRouter.home);
           }
           if (state is LoginError) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -64,7 +65,7 @@ class LoginScreenBody extends StatelessWidget {
                     height: 50.h,
                   ),
                   CustomTextField(
-                    keyboardType: TextInputType.emailAddress,
+                      keyboardType: TextInputType.emailAddress,
                       controller: email,
                       label: 'email',
                       validator: (value) => Validator().validateEmail(value!),
@@ -73,7 +74,7 @@ class LoginScreenBody extends StatelessWidget {
                     height: 20.h,
                   ),
                   CustomTextField(
-                    keyboardType: TextInputType.visiblePassword,
+                      keyboardType: TextInputType.visiblePassword,
                       onPressed: () {
                         loginCubit.changePasswordVisibility();
                       },

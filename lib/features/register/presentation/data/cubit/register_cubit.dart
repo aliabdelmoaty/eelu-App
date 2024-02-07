@@ -18,34 +18,35 @@ class RegisterCubit extends Cubit<RegisterState> {
     required String password,
     required String name,
     required int id,
+    required String image,
   }) async {
     emit(RegisterLoading());
     try {
-       await FirebaseAuth.instance
+      await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
         email: email,
         password: password,
       )
           .then((value) {
-        createUser(email: email, uid: value.user!.uid, name: name, id: id);
+        createUser(
+            email: email,
+            uid: value.user!.uid,
+            name: name,
+            id: id,
+            image: image);
         CacheHelper.saveData(key: 'uid', value: value.user!.uid);
         emit(RegisterSuccess());
       }).catchError((e) {
-        print(e);
-        emit(RegisterError());
+        emit(RegisterError('please try again later'));
       });
     } on FirebaseAuthException catch (e) {
-      emit(RegisterError());
-
-      if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
+      if (e.message == 'weak-password') {
+        emit(RegisterError('The password provided is too weak.'));
+      } else if (e.message == 'email-already-in-use') {
+        emit(RegisterError('The account already exists for that email.'));
       }
     } catch (e) {
-      emit(RegisterError());
-
-      print(e);
+      emit(RegisterError('please try again later'));
     }
   }
 
@@ -53,11 +54,12 @@ class RegisterCubit extends Cubit<RegisterState> {
     required String email,
     required String name,
     required int id,
+    required String image,
     required String uid,
   }) async {
     emit(CreateUserLoading());
     RegisterModel registerModel =
-        RegisterModel(name: name, email: email, id: id, uid: uid);
+        RegisterModel(name: name, email: email, id: id, uid: uid, image: image);
     try {
       FirebaseFirestore.instance
           .collection('users')
@@ -65,7 +67,6 @@ class RegisterCubit extends Cubit<RegisterState> {
           .set(registerModel.toJson());
       emit(CreateUserSuccess());
     } catch (e) {
-      print(e);
       emit(CreateUserError());
     }
   }

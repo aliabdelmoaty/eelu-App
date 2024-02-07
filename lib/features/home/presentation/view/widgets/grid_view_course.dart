@@ -27,7 +27,8 @@ class GridViewCourse extends StatelessWidget {
         children: List.generate(courses.length, (index) {
           return GestureDetector(
             onTap: () {
-              _showDoctorDialog(context, dataCourse[index].doctors);
+              _showDoctorDialog(
+                  context, dataCourse[index].doctors, courses[index],dataCourse[index]);
 
               // ignore: avoid_print
               print(index);
@@ -43,10 +44,8 @@ class GridViewCourse extends StatelessWidget {
   }
 }
 
-void _showDoctorDialog(BuildContext context, List<String>? doctorsName) {
-  List<String>? doctors = doctorsName;
-
-  String selectedDoctor = doctors![0];
+void _showDoctorDialog(
+    BuildContext context, List<String>? doctorsName, String name, ItemCourseModel itemCourse) {
 
   showDialog(
     context: context,
@@ -61,14 +60,18 @@ void _showDoctorDialog(BuildContext context, List<String>? doctorsName) {
           height: 175.h,
           child: Column(
             children: <Widget>[
-              for (String doctor in doctors)
+              for (String doctor in doctorsName!)
                 ListTile(
                   title: Text(
                     doctor,
                     style: Styles.textStyle13,
                   ),
                   onTap: () {
-                    GoRouter.of(context).push(AppRouter.course);
+                    Navigator.of(context).pop();
+                    GoRouter.of(context).push(AppRouter.course, extra: {
+                      'title': name,
+                      'itemCourseModel': itemCourse
+                    });
                   },
                 ),
             ],
@@ -78,7 +81,6 @@ void _showDoctorDialog(BuildContext context, List<String>? doctorsName) {
     },
   ).then((value) {
     if (value != null) {
-      selectedDoctor = value;
       GoRouter.of(context).push(AppRouter.course);
     }
   });
