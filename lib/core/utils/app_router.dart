@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:payment/core/constant.dart';
 import 'package:payment/features/course/presentation/view/course_screen.dart';
+import 'package:payment/features/course/presentation/view/data/cubit/course_cubit.dart';
 import 'package:payment/features/course/presentation/view/widgets/pdf_view.dart';
 import 'package:payment/features/course/presentation/view/widgets/video_play.dart';
 import 'package:payment/features/forgot%20Password/presentation/data/cubit/forgot_password_cubit.dart';
@@ -62,10 +63,13 @@ abstract class AppRouter {
     GoRoute(
       path: course,
       builder: (context, state) {
-        return CourseScreen(
-            title: (state.extra as Map<String, dynamic>)['title'].toString(),
-            itemCourseModel:
-                (state.extra as Map<String, dynamic>)['itemCourseModel']);
+        return BlocProvider(
+          create: (context) => CourseCubit(),
+          child: CourseScreen(
+              title: (state.extra as Map<String, dynamic>)['title'].toString(),
+              itemCourseModel:
+                  (state.extra as Map<String, dynamic>)['itemCourseModel']),
+        );
       },
     ),
     GoRoute(

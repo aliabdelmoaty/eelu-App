@@ -4,20 +4,24 @@ import 'package:go_router/go_router.dart';
 import 'package:payment/core/utils/app_router.dart';
 import 'package:payment/core/utils/colors.dart';
 import 'package:payment/core/utils/styles.dart';
+import 'package:payment/features/course/presentation/view/data/cubit/course_cubit.dart';
+import 'package:payment/features/course/presentation/view/widgets/custom_bottom_sheet.dart';
 
 class CustomExpansionTile extends StatefulWidget {
   const CustomExpansionTile({
     super.key,
     required this.items,
-    required this.text,  this.url,  this.title,
+    required this.text,
+    this.url,
+    this.title,
+     this.cubit,
   });
   final List<String>? items;
   final String text;
-  final List<String> ? url;
-  final List<String> ? title;
+  final List<String>? url;
+  final List<String>? title;
+  final CourseCubit? cubit;
 
-
-  
   @override
   // ignore: library_private_types_in_public_api
   _CustomExpansionTileState createState() => _CustomExpansionTileState();
@@ -28,6 +32,7 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> {
 
   @override
   Widget build(BuildContext context) {
+    var cubit = widget.cubit;
     return ExpansionTile(
       collapsedBackgroundColor: ColorsApp.blue,
       backgroundColor: Colors.grey[100],
@@ -65,14 +70,12 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> {
                       if (widget.text == 'Videos') {
                         GoRouter.of(context).push(AppRouter.video, extra: {
                           'title': widget.title?[widget.items!.indexOf(item)],
-                          'urlVideo':
-                              widget.url?[widget.items!.indexOf(item)]
+                          'urlVideo': widget.url?[widget.items!.indexOf(item)]
                         });
                       } else {
                         GoRouter.of(context).push(AppRouter.pdfView, extra: {
                           'title': widget.title?[widget.items!.indexOf(item)],
-                          'linkPdf':
-                              widget.url?[widget.items!.indexOf(item)]
+                          'linkPdf': widget.url?[widget.items!.indexOf(item)]
                         });
                       }
                     },
@@ -84,8 +87,46 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> {
                   SizedBox(width: 10.w),
                   GestureDetector(
                     onTap: () {
-                      showDialogDownload(context);
-                      // GoRouter.of(context).push(AppRouter.login);
+                      if (widget.text == 'Videos') {
+                        showDialogDownload(
+                            context,
+                            widget.title![widget.items!.indexOf(item)]
+                                .toString(),
+                           () {
+                          GoRouter.of(context).pop();
+                          cubit!
+                              .analyzeVideo(
+                            urlController: widget.url![widget.items!.indexOf(item)]
+                          )
+                              .then((value) {
+                            showBottomSheet(
+                                context: context,
+                                builder: (context) {
+                                  return CustomBottomSheet(cubit: cubit);
+                                });
+                          });
+                        });
+                      } else {
+                        showDialogDownload(
+                            context,
+                            widget.title![widget.items!.indexOf(item)]
+                                .toString(),
+                          () {
+                            GoRouter.of(context).pop();
+                            cubit
+                                ?.getPdfNameFromUrl(
+                               widget.url![widget.items!.indexOf(item)],
+                            )
+                                .then((value) {
+                              cubit.downloadPdf(
+                                  urlController:
+                               widget.url![widget.items!.indexOf(item)],
+                              );
+                            });
+                          },
+
+                            );
+                      }
                     },
                     child: const Icon(
                       Icons.file_download_outlined,
@@ -105,18 +146,15 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> {
     );
   }
 
-  Future<dynamic> showDialogDownload(BuildContext context) {
+  Future<dynamic> showDialogDownload(
+      BuildContext context, String name, Function()? onPressed) {
     return showDialog(
         context: context,
         builder: (context) => AlertDialog(
               title: const Text('Download'),
-              content: const Text('Do you want to download this file?'),
+              content: Text('Do you want to download this $name?'),
               actions: [
-                TextButton(
-                    onPressed: () {
-                      GoRouter.of(context).pop();
-                    },
-                    child: const Text('Yes')),
+                TextButton(onPressed: onPressed, child: const Text('Yes')),
                 TextButton(
                     onPressed: () {
                       GoRouter.of(context).pop();

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:payment/core/utils/app_router.dart';
 import 'package:payment/core/utils/styles.dart';
 
 class RowRememberAndForgot extends StatelessWidget {
@@ -11,22 +12,11 @@ class RowRememberAndForgot extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Checkbox(
-          value: false,
-          onChanged: (v) {},
-          activeColor: const Color(0xff167F71),
-          overlayColor: MaterialStateProperty.all(const Color(0xff167F71)),
-          hoverColor: const Color(0xff167F71),
-          checkColor: Colors.white,
-        ),
-        const Text(
-          'Remember Me',
-          style: Styles.textStyle13,
-        ),
+       
         const Spacer(),
         TextButton(
           onPressed: () {
-            GoRouter.of(context).push('/forgot');
+            GoRouter.of(context).push(AppRouter.forgot);
           },
           child: const Text(
             'Forgot Password?',

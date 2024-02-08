@@ -15,6 +15,14 @@ class VideoPlayer extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           title:  Text(title),
+           actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(Icons.file_download_outlined),
+            ),
+          ],
         ),
         body: SizedBox(
           width: double.infinity,
