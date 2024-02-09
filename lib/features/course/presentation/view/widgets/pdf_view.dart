@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:payment/core/utils/fallback_loading.dart';
 import 'package:payment/core/utils/styles.dart';
 import 'package:payment/features/course/presentation/view/data/cubit/course_cubit.dart';
-import 'package:payment/features/course/presentation/view/widgets/custom_bottom_sheet.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class PdfView extends StatelessWidget {
