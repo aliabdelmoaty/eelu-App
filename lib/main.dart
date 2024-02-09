@@ -1,4 +1,3 @@
-
 // ignore_for_file: depend_on_referenced_packages
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter/material.dart';
@@ -23,9 +22,9 @@ void main() async {
   runApp(const MyApp());
   Bloc.observer = MyBlocObserver();
   FlutterNativeSplash.remove();
+
+  print(CacheHelper.getData(key: 'uid'));
 }
-
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

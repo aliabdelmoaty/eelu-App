@@ -14,7 +14,7 @@ class CustomExpansionTile extends StatefulWidget {
     required this.text,
     this.url,
     this.title,
-     this.cubit,
+    this.cubit,
   });
   final List<String>? items;
   final String text;
@@ -70,12 +70,14 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> {
                       if (widget.text == 'Videos') {
                         GoRouter.of(context).push(AppRouter.video, extra: {
                           'title': widget.title?[widget.items!.indexOf(item)],
-                          'urlVideo': widget.url?[widget.items!.indexOf(item)]
+                          'urlVideo': widget.url?[widget.items!.indexOf(item)],
+                          'cubit': cubit
                         });
                       } else {
                         GoRouter.of(context).push(AppRouter.pdfView, extra: {
                           'title': widget.title?[widget.items!.indexOf(item)],
-                          'linkPdf': widget.url?[widget.items!.indexOf(item)]
+                          'linkPdf': widget.url?[widget.items!.indexOf(item)],
+                          'cubit': cubit
                         });
                       }
                     },
@@ -91,41 +93,40 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> {
                         showDialogDownload(
                             context,
                             widget.title![widget.items!.indexOf(item)]
-                                .toString(),
-                           () {
+                                .toString(), () {
                           GoRouter.of(context).pop();
                           cubit!
                               .analyzeVideo(
-                            urlController: widget.url![widget.items!.indexOf(item)]
-                          )
+                                  urlController:
+                                      widget.url![widget.items!.indexOf(item)])
                               .then((value) {
                             showBottomSheet(
                                 context: context,
                                 builder: (context) {
-                                  return CustomBottomSheet(cubit: cubit);
+                                  return CustomBottomSheet(
+                                    cubit: cubit,
+                                  );
                                 });
                           });
                         });
                       } else {
                         showDialogDownload(
-                            context,
-                            widget.title![widget.items!.indexOf(item)]
-                                .toString(),
+                          context,
+                          widget.title![widget.items!.indexOf(item)].toString(),
                           () {
                             GoRouter.of(context).pop();
                             cubit
                                 ?.getPdfNameFromUrl(
-                               widget.url![widget.items!.indexOf(item)],
+                              widget.url![widget.items!.indexOf(item)],
                             )
                                 .then((value) {
                               cubit.downloadPdf(
-                                  urlController:
-                               widget.url![widget.items!.indexOf(item)],
+                                urlController:
+                                    widget.url![widget.items!.indexOf(item)],
                               );
                             });
                           },
-
-                            );
+                        );
                       }
                     },
                     child: const Icon(

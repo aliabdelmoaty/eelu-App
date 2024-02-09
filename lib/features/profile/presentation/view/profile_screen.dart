@@ -88,6 +88,15 @@ class ProfileScreenBody extends StatelessWidget {
                     'SIGN OUT',
                     style: Styles.textStyle18,
                   )),
+              SizedBox(
+                height: 20.h,
+              ),
+              const Text('Version 1.0.0', style: Styles.textStyle70014),
+              SizedBox(
+                height: 10.h,
+              ),
+              const Text('Developed by: Ali Abdelmoaty',
+                  style: Styles.textStyle70014),
             ],
           );
         },

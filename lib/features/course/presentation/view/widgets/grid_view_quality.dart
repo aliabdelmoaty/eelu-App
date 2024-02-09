@@ -41,7 +41,6 @@ class _GridViewQualityState extends State<GridViewQuality> {
           selectedQuality: _selectedQuality,
           url: (url) {
             setState(() {
-              print('url: $index :$url');
               widget.urlVideo(url);
             });
           },

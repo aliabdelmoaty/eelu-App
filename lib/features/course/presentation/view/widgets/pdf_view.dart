@@ -1,21 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:payment/core/utils/fallback_loading.dart';
 import 'package:payment/core/utils/styles.dart';
+import 'package:payment/features/course/presentation/view/data/cubit/course_cubit.dart';
+import 'package:payment/features/course/presentation/view/widgets/custom_bottom_sheet.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class PdfView extends StatelessWidget {
-  const PdfView({super.key, required this.linkPdf, required this.title});
+  const PdfView(
+      {super.key, required this.linkPdf, required this.title, this.cubit});
   final String linkPdf;
   final String title;
+  final CourseCubit? cubit;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title:  Text(title),
+          title: Text(title),
           actions: [
             IconButton(
               onPressed: () {
-                Navigator.pop(context);
+                
+                cubit
+                    ?.getPdfNameFromUrl(
+                  linkPdf,
+                )
+                    .then((value) {
+                  cubit?.downloadPdf(
+                    urlController: linkPdf,
+                  );
+                });
               },
               icon: const Icon(Icons.file_download_outlined),
             ),

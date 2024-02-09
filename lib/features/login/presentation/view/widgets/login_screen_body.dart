@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:payment/core/utils/app_router.dart';
 import 'package:payment/core/utils/assets.dart';
+import 'package:payment/core/utils/cache_helper.dart';
 import 'package:payment/core/utils/fallback_loading.dart';
 import 'package:payment/core/utils/styles.dart';
 import 'package:payment/core/utils/validator.dart';
@@ -28,6 +29,7 @@ class LoginScreenBody extends StatelessWidget {
       child: BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) {
           if (state is LoginSuccess) {
+            CacheHelper.saveData(key: 'uid', value: state.uidUser);
             GoRouter.of(context).go(AppRouter.home);
           }
           if (state is LoginError) {

@@ -67,8 +67,12 @@ abstract class AppRouter {
           create: (context) => CourseCubit(),
           child: CourseScreen(
               title: (state.extra as Map<String, dynamic>)['title'].toString(),
+              
               itemCourseModel:
-                  (state.extra as Map<String, dynamic>)['itemCourseModel']),
+                  (state.extra as Map<String, dynamic>)['itemCourseModel'],
+                
+                  ),
+                  
         );
       },
     ),
@@ -84,6 +88,7 @@ abstract class AppRouter {
       builder: (context, state) => PdfView(
         linkPdf: (state.extra as Map<String, dynamic>)['linkPdf'].toString(),
         title: (state.extra as Map<String, dynamic>)['title'].toString(),
+        cubit: (state.extra as Map<String, dynamic>)['cubit'] as CourseCubit
       ),
     ),
     GoRoute(
@@ -91,6 +96,7 @@ abstract class AppRouter {
       builder: (context, state) => VideoPlayer(
         title: (state.extra as Map<String, dynamic>)['title'].toString(),
         urlVideo: (state.extra as Map<String, dynamic>)['urlVideo'].toString(),
+        cubit: (state.extra as Map<String, dynamic>)['cubit'] as CourseCubit
       ),
     ),
   ]);

@@ -13,5 +13,7 @@ part of 'register_cubit.dart';
  class CreateUserLoading extends RegisterState {}
  class CreateUserSuccess extends RegisterState {}
  class CreateUserError extends RegisterState {}
+ class ChangePasswordVisibility extends RegisterState {}
+
 
 

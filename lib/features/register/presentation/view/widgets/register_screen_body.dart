@@ -103,9 +103,14 @@ class RegisterScreenBody extends StatelessWidget {
                     ),
                     CustomTextField(
                       keyboardType: TextInputType.visiblePassword,
+                      onPressed: () {
+                        RegisterCubit.get(context).changePasswordVisibility();
+                      },
                       validator: (value) =>
                           Validator().validatePassword(value!),
                       controller: password,
+                      icon: RegisterCubit.get(context).suffix,
+                      isPassword: RegisterCubit.get(context).isPassword,
                       label: 'Password',
                       assetName: Assets.imagesPassword,
                     ),

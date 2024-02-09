@@ -70,4 +70,12 @@ class RegisterCubit extends Cubit<RegisterState> {
       emit(CreateUserError());
     }
   }
+   IconData suffix = Icons.visibility_rounded;
+  bool isPassword = true;
+  void changePasswordVisibility() {
+    isPassword = !isPassword;
+    suffix =
+        isPassword ? Icons.visibility_rounded : Icons.visibility_off_rounded;
+    emit(ChangePasswordVisibility());
+  }
 }

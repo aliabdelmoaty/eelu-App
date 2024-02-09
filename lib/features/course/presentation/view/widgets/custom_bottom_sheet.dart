@@ -13,7 +13,7 @@ class CustomBottomSheet extends StatelessWidget {
   });
 
   final CourseCubit cubit;
-
+  
   @override
   Widget build(BuildContext context) {
     String? urlVideo;

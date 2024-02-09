@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payment/core/constant.dart';
+import 'package:payment/core/utils/cache_helper.dart';
 import 'package:payment/features/home/presentation/data/model/course_model.dart';
 import 'package:payment/features/home/presentation/data/model/item_course_model.dart';
 import 'package:payment/features/register/model/register_model.dart';
@@ -15,6 +15,7 @@ class HomeCubit extends Cubit<HomeState> {
   var db = FirebaseFirestore.instance;
   List<ItemCourseModel>? itemCourseModel = [];
   RegisterModel? userModel;
+  final String _uid = CacheHelper.getData(key: 'uid');
   static HomeCubit get(context) => BlocProvider.of(context);
 
   Future<void> getCourses() async {
@@ -26,7 +27,9 @@ class HomeCubit extends Cubit<HomeState> {
         }
 
         emit(GetCoursesSuccess());
-      }).catchError((e) {});
+      }).catchError((e) {
+        emit(GetCoursesError(e: e.toString()));
+      });
     } catch (e) {
       emit(GetCoursesError(e: e.toString()));
     }
@@ -57,7 +60,12 @@ class HomeCubit extends Cubit<HomeState> {
   Future<void> getDataUser() async {
     try {
       emit(GetUserDataLoading());
-      await db.collection('users').doc(token).get().then((value) {
+      await db
+          .collection('users')
+          .doc(_uid)
+          .get()
+          .then((value) {
+        print(value.data());
         userModel = RegisterModel.fromJson(value.data()!);
       });
       emit(GetUserDataSuccess());
