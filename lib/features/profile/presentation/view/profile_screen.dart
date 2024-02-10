@@ -37,67 +37,69 @@ class ProfileScreenBody extends StatelessWidget {
       child: BlocConsumer<ProfileCubit, ProfileState>(
         listener: (context, state) {},
         builder: (context, state) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CircleAvatar(
-                radius: 68.r,
-                backgroundColor: ColorsApp.blue,
-                child: CircleAvatar(
-                  backgroundColor: Colors.white,
-                  radius: 65.r,
-                  backgroundImage: NetworkImage(userData.image),
-                ),
-              ),
-              SizedBox(height: 4.h),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      RowInfo(
-                          assetImage: Assets.imagesName, text: userData.name),
-                      SizedBox(
-                        height: 10.h,
-                      ),
-                      RowInfo(
-                          assetImage: Assets.imagesEmail, text: userData.email),
-                      SizedBox(
-                        height: 10.h,
-                      ),
-                      RowInfo(
-                          assetImage: Assets.imagesId,
-                          text: userData.id.toString()),
-                    ],
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CircleAvatar(
+                  radius: 68.r,
+                  backgroundColor: ColorsApp.blue,
+                  child: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    radius: 65.r,
+                    backgroundImage: NetworkImage(userData.image),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 20.h,
-              ),
-              ElevatedButton(
-                  style: ButtonStyle(
-                      backgroundColor: MaterialStateColor.resolveWith(
-                          (states) => ColorsApp.blue)),
-                  onPressed: () {
-                    ProfileCubit.get(context).logOut().then((value) {
-                      GoRouter.of(context).go(AppRouter.login);
-                    });
-                  },
-                  child: const Text(
-                    'SIGN OUT',
-                    style: Styles.textStyle18,
-                  )),
-              SizedBox(
-                height: 20.h,
-              ),
-              const Text('Version 1.0.0', style: Styles.textStyle70014),
-              SizedBox(
-                height: 10.h,
-              ),
-              const Text('Developed by: Ali Abdelmoaty',
-                  style: Styles.textStyle70014),
-            ],
+                SizedBox(height: 4.h),
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        RowInfo(
+                            assetImage: Assets.imagesName, text: userData.name),
+                        SizedBox(
+                          height: 10.h,
+                        ),
+                        RowInfo(
+                            assetImage: Assets.imagesEmail, text: userData.email),
+                        SizedBox(
+                          height: 10.h,
+                        ),
+                        RowInfo(
+                            assetImage: Assets.imagesId,
+                            text: userData.id.toString()),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20.h,
+                ),
+                ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStateColor.resolveWith(
+                            (states) => ColorsApp.blue)),
+                    onPressed: () {
+                      ProfileCubit.get(context).logOut().then((value) {
+                        GoRouter.of(context).go(AppRouter.login);
+                      });
+                    },
+                    child: const Text(
+                      'SIGN OUT',
+                      style: Styles.textStyle18,
+                    )),
+                SizedBox(
+                  height: 20.h,
+                ),
+                const Text('Version 1.0.0', style: Styles.textStyle70014),
+                SizedBox(
+                  height: 10.h,
+                ),
+                const Text('Developed by: Ali Abdelmoaty',
+                    style: Styles.textStyle70014),
+              ],
+            ),
           );
         },
       ),

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:payment/core/constant.dart';
 import 'package:payment/core/utils/app_router.dart';
 import 'package:payment/core/utils/assets.dart';
 import 'package:payment/core/utils/cache_helper.dart';
@@ -30,6 +31,9 @@ class LoginScreenBody extends StatelessWidget {
         listener: (context, state) {
           if (state is LoginSuccess) {
             CacheHelper.saveData(key: 'uid', value: state.uidUser);
+             if (state.uidUser == 'mNZIW2lfvSduqyB7Mz8oN80zyIo1') {
+              admin = true;
+            }
             GoRouter.of(context).go(AppRouter.home);
           }
           if (state is LoginError) {

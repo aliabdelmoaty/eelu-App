@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:payment/core/widgets/custom_expansion_tile.dart';
 import 'package:payment/features/course/presentation/view/data/cubit/course_cubit.dart';
+import 'package:payment/features/course/presentation/view/widgets/add_video.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class CourseScreenBody extends StatelessWidget {
@@ -11,10 +12,11 @@ class CourseScreenBody extends StatelessWidget {
     super.key,
     required this.itemsVideo,
     required this.itemLec,
+    this.nameCourse,
   });
   final Map<String, dynamic> itemsVideo;
   final Map<String, dynamic> itemLec;
-
+  final String? nameCourse;
   @override
   Widget build(BuildContext context) {
     List<String> nameVideos = [];
@@ -86,6 +88,20 @@ class CourseScreenBody extends StatelessWidget {
             } else if (state is AnalyzeVideoSuccess) {
               GoRouter.of(context).pop();
             }
+            if (state is AddSuccess) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text('added successfully'),
+                ),
+              );
+            }
+            if (state is AddError) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.e),
+                ),
+              );
+            }
           },
           builder: (context, state) {
             var cubit = CourseCubit.get(context);
@@ -97,14 +113,32 @@ class CourseScreenBody extends StatelessWidget {
                     text: 'Lectures',
                     url: urlLectures,
                     title: nameLectures,
-                    cubit: cubit),
+                    nameCourse: nameCourse,
+                    cubit: cubit,
+                    onTap: () {
+                      cubit.chooseFile().then(
+                          (value) => cubit.uploadFile(nameCourse: nameCourse));
+                    }),
                 const SizedBox(height: 20),
                 CustomExpansionTile(
-                    items: nameVideos,
-                    url: urlVideos,
-                    title: nameVideos,
-                    text: 'Videos',
-                    cubit: cubit)
+                  items: nameVideos,
+                  url: urlVideos,
+                  title: nameVideos,
+                  text: 'Videos',
+                  cubit: cubit,
+                  nameCourse: nameCourse,
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AddVideo(
+                          cubit: cubit,
+                          nameCourse: nameCourse,
+                        );
+                      },
+                    );
+                  },
+                )
               ],
             );
           },

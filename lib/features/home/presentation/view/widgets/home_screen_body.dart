@@ -17,7 +17,16 @@ class HomeScreenBody extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.all(8.r),
           child: BlocConsumer<HomeCubit, HomeState>(
-            listener: (context, state) {},
+            listener: (context, state) {
+              if (state is GetDataCoursesError) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.e),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+            },
             builder: (context, state) {
               if (state is GetDataCoursesSuccess ||
                   state is GetCoursesSuccess ||
@@ -32,7 +41,7 @@ class HomeScreenBody extends StatelessWidget {
                             style: Styles.textStyle24),
                         const Spacer(),
                         CircleAvatarProfile(
-                          userData: cubit.userModel!,
+                          userData: cubit.userModel,
                         )
                       ],
                     ),

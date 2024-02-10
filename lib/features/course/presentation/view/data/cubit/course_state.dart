@@ -1,48 +1,90 @@
 part of 'course_cubit.dart';
 
-sealed class CourseState {}
+class CourseState {}
 
-final class CourseInitial extends CourseState {}
-final class AnalyzeVideoLoading extends CourseState {}
-final class AnalyzeVideoSuccess extends CourseState {}
-final class AnalyzeVideoError extends CourseState {
-  final String e;
+class CourseInitial extends CourseState {}
+
+class AnalyzeVideoLoading extends CourseState {}
+
+class AnalyzeVideoSuccess extends CourseState {}
+
+class AnalyzeVideoError extends CourseState {
+  String e;
   AnalyzeVideoError({required this.e});
 }
-final class DownloadVideoLoading extends CourseState {}
 
-final class DownloadVideoSuccess extends CourseState {}
-final class DownloadVideoProcess extends CourseState {
-  final String progress;
+class DownloadVideoLoading extends CourseState {}
+
+class DownloadVideoSuccess extends CourseState {}
+
+class DownloadVideoProcess extends CourseState {
+  String progress;
   DownloadVideoProcess({required this.progress});
 }
 
-
-final class DownloadVideoError extends CourseState {
-  final String e;
+class DownloadVideoError extends CourseState {
+  String e;
   DownloadVideoError({required this.e});
 }
-final class DownloadPdfLoading extends CourseState {}
 
-final class DownloadPdfSuccess extends CourseState {}
+class DownloadPdfLoading extends CourseState {}
 
-final class DownloadPdfProcess extends CourseState {
-  final String progress;
+class DownloadPdfSuccess extends CourseState {}
+
+class DownloadPdfProcess extends CourseState {
+  String progress;
 
   DownloadPdfProcess({required this.progress});
-  
 }
 
-final class DownloadPdfError extends CourseState {
-  final String e;
+class DownloadPdfError extends CourseState {
+  String e;
   DownloadPdfError({required this.e});
 }
 
-final class GetLocationLoading extends CourseState {}
+class GetLocationLoading extends CourseState {}
 
-final class GetLocationSuccess extends CourseState {}
+class GetLocationSuccess extends CourseState {}
 
-final class GetLocationError extends CourseState {
-  final String e;
+class GetLocationError extends CourseState {
+  String e;
   GetLocationError({required this.e});
 }
+
+class AddLoading extends CourseState {}
+
+class AddError extends CourseState {
+  final String e;
+
+  AddError({required this.e});
+}
+
+class AddSuccess extends CourseState {}
+
+class ChooseFileLoading extends CourseState {}
+
+class ChooseFileSuccess extends CourseState {}
+
+class ChooseFileError extends CourseState {
+  final String e;
+  ChooseFileError({required this.e});
+}
+
+class UploadFileSuccess extends CourseState {}
+
+class UploadFileError extends CourseState {
+  final String e;
+  UploadFileError({required this.e});
+}
+
+class UploadFileLoading extends CourseState {}
+
+class DeleteLoading extends CourseState {}
+
+class DeleteError extends CourseState {
+  final String e;
+
+  DeleteError({required this.e});
+}
+
+class DeleteSuccess extends CourseState {}

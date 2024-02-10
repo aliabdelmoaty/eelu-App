@@ -19,11 +19,13 @@ void main() async {
   );
   await CacheHelper.init();
   await askPermissions();
+   if (token== 'mNZIW2lfvSduqyB7Mz8oN80zyIo1') {
+    admin = true;
+  }
   runApp(const MyApp());
   Bloc.observer = MyBlocObserver();
   FlutterNativeSplash.remove();
-
-  print(CacheHelper.getData(key: 'uid'));
+  
 }
 
 class MyApp extends StatelessWidget {

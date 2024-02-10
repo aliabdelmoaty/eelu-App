@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:payment/core/utils/styles.dart';
+import 'package:payment/core/widgets/divider.dart';
 import 'package:payment/features/course/presentation/view/data/cubit/course_cubit.dart';
 import 'package:payment/features/course/presentation/view/widgets/grid_view_quality.dart';
 import 'package:payment/features/course/presentation/view/widgets/row_download_or_cancel.dart';
@@ -13,7 +14,7 @@ class CustomBottomSheet extends StatelessWidget {
   });
 
   final CourseCubit cubit;
-  
+
   @override
   Widget build(BuildContext context) {
     String? urlVideo;
@@ -25,6 +26,10 @@ class CustomBottomSheet extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Align(alignment: Alignment.center, child: DividerBottomSheet()),
+            SizedBox(
+              height: 5.h,
+            ),
             Text(
               cubit.nameVideo!,
               style: Styles.textStyle16,

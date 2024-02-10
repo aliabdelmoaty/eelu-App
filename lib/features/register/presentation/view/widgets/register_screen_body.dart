@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:payment/core/constant.dart';
 import 'package:payment/core/utils/app_router.dart';
 import 'package:payment/core/utils/assets.dart';
+import 'package:payment/core/utils/cache_helper.dart';
 import 'package:payment/core/utils/fallback_loading.dart';
 import 'package:payment/core/utils/styles.dart';
 import 'package:payment/core/utils/validator.dart';
@@ -35,6 +36,10 @@ class RegisterScreenBody extends StatelessWidget {
           child: BlocConsumer<RegisterCubit, RegisterState>(
             listener: (context, state) {
               if (state is RegisterSuccess) {
+                CacheHelper.saveData(key: 'uid', value: state.uid);
+                if (state.uid == 'mNZIW2lfvSduqyB7Mz8oN80zyIo1') {
+                  admin = true;
+                }
                 GoRouter.of(context).push(AppRouter.home);
               } else if (state is RegisterError) {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(

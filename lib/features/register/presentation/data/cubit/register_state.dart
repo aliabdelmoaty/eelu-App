@@ -9,7 +9,10 @@ part of 'register_cubit.dart';
   final String message;
   RegisterError(this.message);
 }
- class RegisterSuccess extends RegisterState {}
+ class RegisterSuccess extends RegisterState {
+  final String uid;
+  RegisterSuccess(this.uid);
+ }
  class CreateUserLoading extends RegisterState {}
  class CreateUserSuccess extends RegisterState {}
  class CreateUserError extends RegisterState {}

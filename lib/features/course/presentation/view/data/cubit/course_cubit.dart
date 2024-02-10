@@ -1,10 +1,15 @@
 // ignore_for_file: avoid_print
 
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:payment/core/utils/notifications.dart';
+
 import 'package:permission_handler/permission_handler.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 part 'course_state.dart';
@@ -20,8 +25,10 @@ class CourseCubit extends Cubit<CourseState> {
   String? nameVideo;
   String? namePdf;
   String? directoryPath;
+  List<String>? pathPdf;
   final LocalNotificationService _localNotificationService =
       LocalNotificationService();
+
   Future<void> analyzeVideo({required String urlController}) async {
     emit(AnalyzeVideoLoading());
     String url = urlController;
@@ -49,24 +56,31 @@ class CourseCubit extends Cubit<CourseState> {
       var status = await Permission.storage.status;
       if (status.isDenied || status.isRestricted || status.isLimited) {
         DeviceInfoPlugin().androidInfo.then((value) {
-          if (value.version.sdkInt < 33) {
+          if (value.version.sdkInt <= 33) {
             Permission.manageExternalStorage.request();
             emit(GetLocationError(
                 e: "Please allow the permission to access the storage"));
           }
         });
-      }
-      try {
-        directoryPath = await FilePicker.platform.getDirectoryPath();
-        emit(GetLocationSuccess());
-      } catch (e) {
-        if (directoryPath == null) {
-          emit(GetLocationError(e: "No directory selected"));
+      } else if (status.isPermanentlyDenied) {
+        emit(GetLocationError(
+            e: "Please allow the permission to access the storage"));
+      } else if (status.isGranted) {
+        try {
+          directoryPath = await FilePicker.platform.getDirectoryPath();
+          emit(GetLocationSuccess());
+        } catch (e) {
+          if (directoryPath == null) {
+            emit(GetLocationError(e: "No directory selected"));
+          } else {
+            emit(GetLocationError(
+                e: "Please allow the permission to access the storage"));
+          }
         }
+        print("Selected directory: $directoryPath");
       }
-      print("Selected directory: $directoryPath");
+      emit(GetLocationSuccess());
     } catch (e) {
-      print(e.toString());
       emit(GetLocationError(
           e: "Please allow the permission to access the storage"));
     }
@@ -152,6 +166,103 @@ class CourseCubit extends Cubit<CourseState> {
         print(e.toString());
         emit(DownloadPdfError(e: e.toString()));
       }
+    }
+  }
+
+  Future<void> add(
+      {String? title,
+      String? url,
+      String? nameCourse,
+      String? nameUpdate}) async {
+    emit(AddLoading());
+    try {
+      await FirebaseFirestore.instance
+          .collection('courses')
+          .doc('$nameCourse')
+          .update({
+        '$nameUpdate.$title': url,
+      });
+      _localNotificationService.showNotification(
+          'Add Success', 'Add $title successfully');
+      emit(AddSuccess());
+    } catch (e) {
+      emit(AddError(e: e.toString()));
+    }
+  }
+
+  Future<void> delete(
+      {String? title, String? nameCourse, String? nameDelete,bool? pdf=false}) async {
+    emit(DeleteLoading());
+    try {
+      await FirebaseFirestore.instance
+          .collection('courses')
+          .doc('$nameCourse')
+          .update({
+        '$nameDelete.$title': FieldValue.delete(),
+      });
+    if(pdf==true){
+      await FirebaseStorage.instance
+          .ref()
+          .child('/material/$nameCourse/$title.pdf')
+          .delete();
+    }
+      _localNotificationService.showNotification(
+          'Delete Success', 'Delete $title successfully');
+      emit(DeleteSuccess());
+    } catch (e) {
+      emit(DeleteError(e: e.toString()));
+    }
+  }
+
+  Future<void> chooseFile() async {
+    emit(ChooseFileLoading());
+    try {
+      final filePicker = await FilePicker.platform.pickFiles(
+          type: FileType.custom,
+          allowedExtensions: ['pdf'],
+          allowMultiple: true);
+      if (filePicker != null) {
+        pathPdf = [];
+        for (var file in filePicker.files) {
+          print(file.path);
+          pathPdf?.add(file.path!);
+        }
+        print('pathPdf is:  $pathPdf');
+        emit(ChooseFileSuccess());
+      } else {
+        emit(ChooseFileError(e: 'No file selected'));
+      }
+    } catch (e) {
+      print(e.toString());
+      emit(ChooseFileError(e: e.toString()));
+    }
+  }
+
+  Future<void> uploadFile({String? nameCourse}) async {
+    try {
+      emit(UploadFileLoading());
+      for (String path in pathPdf!) {
+        await FirebaseStorage.instance
+            .ref()
+            .child('/material/$nameCourse/${Uri.file(path).pathSegments.last}')
+            .putFile(File(path))
+            .then((p0) => p0.ref.getDownloadURL().then((url) {
+                  List<String> pathComponents =
+                      Uri.file(path).pathSegments.last.split('/');
+                  String fileNameWithExtension = pathComponents.last;
+                  String nameWithoutExtension =
+                      fileNameWithExtension.replaceAll('.pdf', '');
+                  add(
+                      title: nameWithoutExtension,
+                      url: url,
+                      nameCourse: nameCourse,
+                      nameUpdate: 'lectures');
+                }));
+      }
+
+      emit(UploadFileSuccess());
+    } catch (e) {
+      emit(UploadFileError(e: e.toString()));
     }
   }
 }

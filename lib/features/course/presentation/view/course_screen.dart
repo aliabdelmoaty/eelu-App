@@ -17,6 +17,7 @@ class CourseScreen extends StatelessWidget {
       body: CourseScreenBody(
         itemsVideo: itemCourseModel.videos,
         itemLec: itemCourseModel.lectures,
+        nameCourse: title,
       ),
     );
   }

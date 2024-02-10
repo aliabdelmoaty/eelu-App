@@ -12,9 +12,7 @@ class LocalNotificationService {
         android: initializationSettingsAndroid, iOS: null, macOS: null);
     await _notificationsPlugin.initialize(initializationSettings);
     (details) {
-      if (details.input != null) {
-        
-      }
+      if (details.input != null) {}
     };
   }
 
@@ -54,5 +52,21 @@ class LocalNotificationService {
     );
   }
 
-  
+  Future<void> showNotification(String title, String? body) async {
+    const androidPlatformChannelSpecifics = AndroidNotificationDetails(
+        'add_success_notification_channel', 'AddSuccess',
+        importance: Importance.high,
+        priority: Priority.high,
+        onlyAlertOnce: true,
+        icon: '@mipmap/launcher_icon');
+    const notificationDetails = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+    );
+    await _notificationsPlugin.show(
+      _notificationId++,
+      title,
+      body,
+      notificationDetails,
+    );
+  }
 }

@@ -25,7 +25,6 @@ class HomeCubit extends Cubit<HomeState> {
         for (var element in value.docs) {
           coursesName!.add(element.id);
         }
-
         emit(GetCoursesSuccess());
       }).catchError((e) {
         emit(GetCoursesError(e: e.toString()));
@@ -34,23 +33,23 @@ class HomeCubit extends Cubit<HomeState> {
       emit(GetCoursesError(e: e.toString()));
     }
   }
-
   Future<void> getDataCourses() async {
     try {
       emit(GetDataCoursesLoading());
-      await db.collection('courses').get().then((value) {
-        for (var element in value.docs) {
-          final Map<String, dynamic> data = element.data();
+
+      db.collection('courses').snapshots().listen((QuerySnapshot snapshot) {
+        itemCourseModel?.clear();
+        for (var element in snapshot.docs) {
+          final Map<String, dynamic>? data =
+              element.data() as Map<String, dynamic>?;
           itemCourseModel?.add(ItemCourseModel.fromJson({
-            'image': data['image'],
-            'lectures': Map<String, String>.from(data['lectures'] ?? {}),
-            'videos': Map<String, String>.from(data['videos'] ?? {}),
-            'doctors': List<String>.from(data['doctors'] ?? []),
+            'image': data?['image'],
+            'lectures': Map<String, String>.from(data?['lectures'] ?? {}),
+            'videos': Map<String, String>.from(data?['videos'] ?? {}),
+            'doctors': List<String>.from(data?['doctors'] ?? []),
           }));
         }
         emit(GetDataCoursesSuccess());
-      }).catchError((e) {
-        emit(GetDataCoursesError(e: e.toString()));
       });
     } catch (e) {
       emit(GetDataCoursesError(e: e.toString()));
@@ -60,12 +59,7 @@ class HomeCubit extends Cubit<HomeState> {
   Future<void> getDataUser() async {
     try {
       emit(GetUserDataLoading());
-      await db
-          .collection('users')
-          .doc(_uid)
-          .get()
-          .then((value) {
-        print(value.data());
+      await db.collection('users').doc(_uid).get().then((value) {
         userModel = RegisterModel.fromJson(value.data()!);
       });
       emit(GetUserDataSuccess());
