@@ -88,3 +88,4 @@ class DeleteError extends CourseState {
 }
 
 class DeleteSuccess extends CourseState {}
+

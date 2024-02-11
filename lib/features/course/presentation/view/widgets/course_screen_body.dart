@@ -42,13 +42,15 @@ class CourseScreenBody extends StatelessWidget {
                 context: context,
                 builder: (context) {
                   return AlertDialog(
-                    title:
-                        const Text('we need permission to access the storage'),
+                    title: state.e ==
+                            'Please allow the permission to access the storage'
+                        ? const Text('we need permission to access the storage')
+                        : Text("No directory selected"),
                     content: Text(state.e),
                     actions: [
                       TextButton(
                           onPressed: () {
-                            openAppSettings();
+                            Permission.manageExternalStorage.request();
                           },
                           child: const Text('Open Settings'))
                     ],
@@ -61,13 +63,23 @@ class CourseScreenBody extends StatelessWidget {
                 context: context,
                 builder: (context) {
                   return AlertDialog(
-                    title:
-                        const Text('Failed to download the video, try again'),
+                    title: const Text('Failed to download the video'),
                     content: Text(state.e),
                     actions: [
                       TextButton(
-                          onPressed: () {
-                            GoRouter.of(context).pop();
+                          onPressed: () async {
+                            if (state.e.startsWith('Error in access')) {
+                              var status = await Permission
+                                  .manageExternalStorage
+                                  .request();
+                              if (status.isDenied) {
+                                openAppSettings().then((value) {
+                                  GoRouter.of(context).pop();
+                                });
+                              }
+                            } else {
+                              GoRouter.of(context).pop();
+                            }
                           },
                           child: const Text('ok'))
                     ],
@@ -75,6 +87,7 @@ class CourseScreenBody extends StatelessWidget {
                 },
               );
             }
+            
             if (state is AnalyzeVideoLoading) {
               showDialog(
                 context: context,
@@ -138,7 +151,8 @@ class CourseScreenBody extends StatelessWidget {
                       },
                     );
                   },
-                )
+                ),
+                
               ],
             );
           },

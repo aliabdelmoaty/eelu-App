@@ -1,9 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -41,7 +39,6 @@ class CourseCubit extends Cubit<CourseState> {
         var value = await _yt.videos.streamsClient.getManifest(url);
         videoQualities = value.muxed.toList();
       }
-
       emit(AnalyzeVideoSuccess());
     } catch (e) {
       print(e.toString());
@@ -50,39 +47,34 @@ class CourseCubit extends Cubit<CourseState> {
     }
   }
 
+  Future<bool> requestPermission() async {
+    bool mediaPermission = await Permission.accessMediaLocation.isGranted;
+    if (!mediaPermission) {
+      mediaPermission =
+          await Permission.accessMediaLocation.request().isGranted;
+    }
+    bool isPermissionGranted = mediaPermission;
+    if (isPermissionGranted) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Future<void> getLocation() async {
     try {
       emit(GetLocationLoading());
-      var status = await Permission.storage.status;
-      if (status.isDenied || status.isRestricted || status.isLimited) {
-        DeviceInfoPlugin().androidInfo.then((value) {
-          if (value.version.sdkInt <= 33) {
-            Permission.manageExternalStorage.request();
-            emit(GetLocationError(
-                e: "Please allow the permission to access the storage"));
-          }
-        });
-      } else if (status.isPermanentlyDenied) {
-        emit(GetLocationError(
-            e: "Please allow the permission to access the storage"));
-      } else if (status.isGranted) {
-        try {
-          directoryPath = await FilePicker.platform.getDirectoryPath();
-          emit(GetLocationSuccess());
-        } catch (e) {
-          if (directoryPath == null) {
-            emit(GetLocationError(e: "No directory selected"));
-          } else {
-            emit(GetLocationError(
-                e: "Please allow the permission to access the storage"));
-          }
-        }
-        print("Selected directory: $directoryPath");
+      await requestPermission();
+      var baseDirectory = '/storage/emulated/0/download/';
+      var eduproDirectory = Directory('$baseDirectory/edupro');
+      if (!eduproDirectory.existsSync()) {
+        eduproDirectory.createSync(recursive: true);
       }
+      directoryPath = eduproDirectory.path;
+      print('directoryPath is: $directoryPath');
       emit(GetLocationSuccess());
     } catch (e) {
-      emit(GetLocationError(
-          e: "Please allow the permission to access the storage"));
+      emit(GetLocationError(e: "Error getting location: $e"));
     }
   }
 
@@ -100,21 +92,27 @@ class CourseCubit extends Cubit<CourseState> {
         print(pathSave);
         try {
           await _dio.download(urlController, pathSave,
-              // cancelToken: ,
               onReceiveProgress: (received, total) {
             if (total <= 0) return;
             downloadProgress =
                 '${(received / total * 100).toStringAsFixed(0)}%';
             _localNotificationService
                 .showDownloadProgressNotification(downloadProgress!);
+
             emit(DownloadVideoProcess(progress: downloadProgress!));
           });
-        } catch (e) {
+          _localNotificationService.showDownloadSuccessNotification(nameVideo!).then((value) {
+          emit(DownloadVideoSuccess());
+
+          });
+
+        } on DioException catch (e) {
           print(e.toString());
-          emit(DownloadVideoError(e: 'Error in download video${e.toString()}'));
+          emit(DownloadVideoError(e: 'Error in download video${e.message}'));
+        } on PathAccessException catch (e) {
+          emit(DownloadVideoError(
+              e: 'Error in access save file video ${e.message}'));
         }
-        _localNotificationService.showDownloadSuccessNotification(nameVideo!);
-        emit(DownloadVideoSuccess());
       } catch (e) {
         print(e.toString());
         emit(DownloadVideoError(e: e.toString()));
@@ -191,7 +189,10 @@ class CourseCubit extends Cubit<CourseState> {
   }
 
   Future<void> delete(
-      {String? title, String? nameCourse, String? nameDelete,bool? pdf=false}) async {
+      {String? title,
+      String? nameCourse,
+      String? nameDelete,
+      bool? pdf = false}) async {
     emit(DeleteLoading());
     try {
       await FirebaseFirestore.instance
@@ -200,12 +201,12 @@ class CourseCubit extends Cubit<CourseState> {
           .update({
         '$nameDelete.$title': FieldValue.delete(),
       });
-    if(pdf==true){
-      await FirebaseStorage.instance
-          .ref()
-          .child('/material/$nameCourse/$title.pdf')
-          .delete();
-    }
+      if (pdf == true) {
+        await FirebaseStorage.instance
+            .ref()
+            .child('/material/$nameCourse/$title.pdf')
+            .delete();
+      }
       _localNotificationService.showNotification(
           'Delete Success', 'Delete $title successfully');
       emit(DeleteSuccess());

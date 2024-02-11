@@ -75,18 +75,20 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> {
         ),
       ),
       children: <Widget>[
-        for (var item in widget.items!)
+        for (int i = 0; i < widget.items!.length; i++)
+          // for (var item in widget.items!)
           ListTile(
-            title: Text(item,
+            title: Text(widget.items![i],
                 style: Styles.textStyle16.copyWith(color: ColorsApp.blue)),
             trailing: SizedBox(
               width: 80.w,
               child: Row(
                 children: [
-                  GestureDetectorShow(widget: widget, item: item, cubit: cubit),
+                  GestureDetectorShow(
+                      widget: widget, item: widget.items![i], cubit: cubit),
                   Spacer(),
                   GestureDetectorDownload(
-                      widget: widget, item: item, cubit: cubit),
+                      widget: widget, item: widget.items![i], cubit: cubit),
                   Spacer(),
                   if (admin == true)
                     Column(
@@ -96,16 +98,16 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> {
                           onTap: () {
                             if (widget.text == 'Lectures')
                               cubit!.delete(
-                                  title: item,
+                                  title: widget.items![i],
                                   pdf: true,
                                   nameCourse: widget.nameCourse,
                                   nameDelete: 'lectures');
                             else if (widget.text == 'Videos')
                               cubit!.delete(
-                                  title: item,
+                                  title: widget.items![i],
                                   nameCourse: widget.nameCourse,
                                   nameDelete: 'videos');
-                            print(item);
+                            print(widget.items![i]);
                             print(widget.nameCourse);
                           },
                           child: Icon(Icons.delete_outline_outlined,

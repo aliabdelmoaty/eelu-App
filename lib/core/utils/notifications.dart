@@ -27,7 +27,7 @@ class LocalNotificationService {
       android: androidPlatformChannelSpecifics,
     );
     await _notificationsPlugin.show(
-      _notificationId,
+      _notificationId++,
       'Download Progress',
       'Progress: $progress',
       notificationDetails,
@@ -37,8 +37,8 @@ class LocalNotificationService {
   Future<void> showDownloadSuccessNotification(String name) async {
     const androidPlatformChannelSpecifics = AndroidNotificationDetails(
         'download_success_notification_channel', 'Download Success',
-        importance: Importance.low,
-        priority: Priority.low,
+        importance: Importance.high,
+        priority: Priority.high,
         onlyAlertOnce: true,
         icon: '@mipmap/launcher_icon');
     const notificationDetails = NotificationDetails(
