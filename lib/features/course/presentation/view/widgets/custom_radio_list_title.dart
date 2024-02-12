@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:payment/core/utils/colors.dart';
+import 'package:payment/core/utils/styles.dart';
 import 'package:payment/features/course/presentation/view/data/cubit/course_cubit.dart';
 
 class CustomRadioListTitle extends StatelessWidget {
@@ -9,10 +10,13 @@ class CustomRadioListTitle extends StatelessWidget {
     required this.cubit,
     required this.index,
     required this.selectedQuality,
-    required this.onChanged, required this.url,
+    required this.onChanged,
+    required this.url,
+    required this.size,
   });
 
   final String qualityText;
+  final String size;
   final CourseCubit cubit;
   final int index;
   final String? selectedQuality;
@@ -26,15 +30,15 @@ class CustomRadioListTitle extends StatelessWidget {
       activeColor: ColorsApp.blue,
       groupValue: selectedQuality,
       title: Text(
-        qualityText,
-        maxLines: 1,
+        '${qualityText}\n($size)',
+        style:Styles.textStyle13,
+        maxLines: 3,
         overflow: TextOverflow.ellipsis,
       ),
       onChanged: (value) {
-        String urlVideo= cubit.videoQualities[index].url.toString();
+        String urlVideo = cubit.videoQualities[index].url.toString();
         onChanged(value);
         url(urlVideo);
-        
       },
     );
   }

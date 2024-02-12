@@ -18,9 +18,8 @@ import 'package:payment/features/register/presentation/data/cubit/register_cubit
 import 'package:payment/features/register/presentation/view/register_screen.dart';
 
 abstract class AppRouter {
-  static final String register =
-      (token.isEmpty || token == '') ? '/' : '/register';
-  static final String home = (token.isEmpty || token == '') ? '/home' : '/';
+  static final String register = (uid.isEmpty || uid == '') ? '/' : '/register';
+  static final String home = (uid.isEmpty || uid == '') ? '/home' : '/';
   static const String login = '/login';
   static const String course = '/course';
   static const String profile = '/profile';
@@ -65,7 +64,7 @@ abstract class AppRouter {
           child: CourseScreen(
             title: (state.extra as Map<String, dynamic>)['title'].toString(),
             // itemCourseModel:
-                // (state.extra as Map<String, dynamic>)['itemCourseModel'],
+            // (state.extra as Map<String, dynamic>)['itemCourseModel'],
           ),
         );
       },

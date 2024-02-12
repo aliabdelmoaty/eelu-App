@@ -17,6 +17,7 @@ class CourseCubit extends Cubit<CourseState> {
   CourseCubit() : super(CourseInitial());
   static CourseCubit get(context) => BlocProvider.of(context);
   List<VideoStreamInfo> videoQualities = [];
+  List<String> sizes = [];
   ItemCourseModel? items;
   final Dio _dio = Dio();
   final _yt = YoutubeExplode();
@@ -40,6 +41,9 @@ class CourseCubit extends Cubit<CourseState> {
       } else {
         var value = await _yt.videos.streamsClient.getManifest(url);
         videoQualities = value.muxed.toList();
+        sizes = await Future.wait(videoQualities.map((stream) async {
+          return await sizeOfFile(url: stream.url.toString());
+        }));
       }
       emit(AnalyzeVideoSuccess());
     } catch (e) {
@@ -86,6 +90,40 @@ class CourseCubit extends Cubit<CourseState> {
       emit(GetLocationSuccess());
     } catch (e) {
       emit(GetLocationError(e: "Error getting location: $e"));
+    }
+  }
+
+  Future<String> sizeOfFile({required String url}) async {
+    try {
+      Dio dio = Dio();
+
+      Response response = await dio.head(url);
+
+      if (response.statusCode == 200) {
+        int contentLength = int.parse(response.headers['content-length']![0]);
+
+        return _formatFileSize(contentLength);
+      } else {
+        throw Exception(
+            'Failed to retrieve file metadata: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+      return 'Unknown';
+    }
+  }
+
+  String _formatFileSize(int bytes) {
+    if (bytes < 1024) {
+      return '$bytes B';
+    } else if (bytes < 1024 * 1024) {
+      return '${(bytes / 1024).toStringAsFixed(2)} KB';
+    } else if (bytes < 1024 * 1024 * 1024) {
+      return '${(bytes / (1024 * 1024)).toStringAsFixed(2)} MB';
+    } else if (bytes < 1024 * 1024 * 1024 * 1024) {
+      return '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(2)} GB';
+    } else {
+      return '${(bytes / (1024 * 1024 * 1024 * 1024)).toStringAsFixed(2)} TB';
     }
   }
 
@@ -304,5 +342,4 @@ class CourseCubit extends Cubit<CourseState> {
       emit(UpdateDataCoursesError(e: e.toString()));
     }
   }
-
 }

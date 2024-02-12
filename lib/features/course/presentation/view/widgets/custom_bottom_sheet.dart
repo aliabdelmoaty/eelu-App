@@ -56,11 +56,11 @@ class CustomBottomSheet extends StatelessWidget {
               ),
             ),
             RowDownloadOrCancel(
-              onPressed: () {
+              onPressed: ()  {
                 if (urlVideo == null) {
                   return;
                 } else {
-                  cubit.downloadVideo(
+                    cubit.downloadVideo(
                     urlController: urlVideo!,
                   );
                 }

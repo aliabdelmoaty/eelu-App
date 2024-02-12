@@ -49,7 +49,7 @@ void _showDoctorDialog(BuildContext context, List<String>? doctorsName,
       return AlertDialog(
         backgroundColor: Colors.white,
         title: const Text(
-          'Choose a Doctor',
+          'Choose a professor:',
           style: Styles.textStyle16,
         ),
         content: SizedBox(

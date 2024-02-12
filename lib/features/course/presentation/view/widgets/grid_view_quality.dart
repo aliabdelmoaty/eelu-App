@@ -44,6 +44,7 @@ class _GridViewQualityState extends State<GridViewQuality> {
               widget.urlVideo(url);
             });
           },
+          size: cubit.sizes[index],
         );
       }),
     );

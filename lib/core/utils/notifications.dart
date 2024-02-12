@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class LocalNotificationService {
@@ -8,7 +9,6 @@ class LocalNotificationService {
   static StreamController<NotificationResponse> streamController =
       StreamController();
   static onTap(NotificationResponse notificationResponse) {
-
     streamController.add(notificationResponse);
   }
 
@@ -17,7 +17,11 @@ class LocalNotificationService {
         AndroidInitializationSettings('@mipmap/launcher_icon');
     const initializationSettings = InitializationSettings(
         android: initializationSettingsAndroid,
-        iOS: DarwinInitializationSettings());
+        iOS: DarwinInitializationSettings(
+          requestAlertPermission: true,
+          requestBadgePermission: true,
+          requestSoundPermission: true,
+        ));
     await _notificationsPlugin.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: onTap,
@@ -61,7 +65,7 @@ class LocalNotificationService {
     );
   }
 
-  Future<void> showNotification(String title, String? body) async {
+  Future<void> showNotification(String? title, String? body) async {
     const androidPlatformChannelSpecifics = AndroidNotificationDetails(
         'add_success_notification_channel', 'AddSuccess',
         importance: Importance.high,
@@ -78,4 +82,20 @@ class LocalNotificationService {
       notificationDetails,
     );
   }
+
+  Future<void> tokenHandler() async {
+    // Request token, also possible when app is in background
+    final notificationSettings =
+        await FirebaseMessaging.instance.requestPermission(provisional: true);
+    print(notificationSettings.authorizationStatus);
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    String? token = await messaging.getToken();
+    await messaging.subscribeToTopic("topic_name");
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      showNotification(message.notification!.title, message.notification?.body);
+    });
+  
+  }
+   
 }
