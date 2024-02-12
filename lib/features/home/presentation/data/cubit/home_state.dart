@@ -29,3 +29,8 @@ part of 'home_cubit.dart';
 
   GetUserDataError({required this.e});
 }
+
+class GetAllDataLoading extends HomeState{}
+class GetAllDataSuccess extends HomeState {}
+class GetAllDataError extends HomeState {}
+

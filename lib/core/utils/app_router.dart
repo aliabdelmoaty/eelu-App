@@ -32,10 +32,7 @@ abstract class AppRouter {
     GoRoute(
       path: home,
       builder: (context, state) => BlocProvider(
-        create: (context) => HomeCubit()
-          ..getCourses()
-          ..getDataCourses()
-          ..getDataUser(),
+        create: (context) => HomeCubit()..getAllData(),
         child: const HomeScreen(),
       ),
     ),
@@ -67,8 +64,8 @@ abstract class AppRouter {
           create: (context) => CourseCubit(),
           child: CourseScreen(
             title: (state.extra as Map<String, dynamic>)['title'].toString(),
-            itemCourseModel:
-                (state.extra as Map<String, dynamic>)['itemCourseModel'],
+            // itemCourseModel:
+                // (state.extra as Map<String, dynamic>)['itemCourseModel'],
           ),
         );
       },
@@ -76,7 +73,7 @@ abstract class AppRouter {
     GoRoute(
       path: profile,
       builder: (context, state) => BlocProvider(
-        create: (context) => ProfileCubit(),
+        create: (context) => ProfileCubit()..getDataApp(),
         child: ProfileScreen(userData: state.extra as RegisterModel),
       ),
     ),

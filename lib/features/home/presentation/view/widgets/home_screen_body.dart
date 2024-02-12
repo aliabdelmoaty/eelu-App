@@ -28,9 +28,7 @@ class HomeScreenBody extends StatelessWidget {
               }
             },
             builder: (context, state) {
-              if (state is GetDataCoursesSuccess ||
-                  state is GetCoursesSuccess ||
-                  state is GetUserDataSuccess) {
+              if (state is GetAllDataSuccess) {
                 var cubit = HomeCubit.get(context);
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

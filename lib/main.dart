@@ -1,4 +1,5 @@
 // ignore_for_file: depend_on_referenced_packages
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,21 +12,36 @@ import 'package:payment/generated/l10n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-
+  
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  String? token = await FirebaseMessaging.instance.getToken();
+  print('FCM Token: $token');
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print('Received message: ${message.notification?.title}');
+    // Handle the message
+  });
+
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    print('Opened app from notification: ${message.notification?.title}');
+    // Handle the message
+  });
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  // Handle incoming messages
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print('success');
+  });
   await CacheHelper.init();
   await askPermissions();
-   if (token== 'mNZIW2lfvSduqyB7Mz8oN80zyIo1') {
+  if (token == 'mNZIW2lfvSduqyB7Mz8oN80zyIo1') {
     admin = true;
   }
   runApp(const MyApp());
   Bloc.observer = MyBlocObserver();
   FlutterNativeSplash.remove();
-  
 }
 
 class MyApp extends StatelessWidget {
@@ -50,4 +66,9 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print('Received message in background: ${message.notification?.title}');
+  // Handle the message
 }

@@ -62,7 +62,8 @@ class ProfileScreenBody extends StatelessWidget {
                           height: 10.h,
                         ),
                         RowInfo(
-                            assetImage: Assets.imagesEmail, text: userData.email),
+                            assetImage: Assets.imagesEmail,
+                            text: userData.email),
                         SizedBox(
                           height: 10.h,
                         ),
@@ -81,8 +82,9 @@ class ProfileScreenBody extends StatelessWidget {
                         backgroundColor: MaterialStateColor.resolveWith(
                             (states) => ColorsApp.blue)),
                     onPressed: () {
-                      ProfileCubit.get(context).logOut().then((value) {
-                        GoRouter.of(context).go(AppRouter.login);
+                      ProfileCubit.get(context)
+                      .logOut().then((value) {
+                      GoRouter.of(context).go(AppRouter.login);
                       });
                     },
                     child: const Text(
@@ -92,7 +94,7 @@ class ProfileScreenBody extends StatelessWidget {
                 SizedBox(
                   height: 20.h,
                 ),
-                const Text('Version 1.0.0', style: Styles.textStyle70014),
+                 Text('Version: ${ProfileCubit.get(context).version}', style: Styles.textStyle70014),
                 SizedBox(
                   height: 10.h,
                 ),

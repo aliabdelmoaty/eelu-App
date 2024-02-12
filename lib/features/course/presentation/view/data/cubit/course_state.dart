@@ -89,3 +89,12 @@ class DeleteError extends CourseState {
 
 class DeleteSuccess extends CourseState {}
 
+class UpdateDataCoursesLoading extends CourseState {}
+
+class UpdateDataCoursesSuccess extends CourseState {}
+
+class UpdateDataCoursesError extends CourseState {
+  final String e;
+
+  UpdateDataCoursesError({required this.e});
+}

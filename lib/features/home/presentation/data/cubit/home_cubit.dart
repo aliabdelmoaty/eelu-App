@@ -33,15 +33,15 @@ class HomeCubit extends Cubit<HomeState> {
       emit(GetCoursesError(e: e.toString()));
     }
   }
+
   Future<void> getDataCourses() async {
     try {
       emit(GetDataCoursesLoading());
 
-      db.collection('courses').snapshots().listen((QuerySnapshot snapshot) {
+      db.collection('courses').get().then((value) {
         itemCourseModel?.clear();
-        for (var element in snapshot.docs) {
-          final Map<String, dynamic>? data =
-              element.data() as Map<String, dynamic>?;
+        for (var element in value.docs) {
+          final Map<String, dynamic>? data = element.data();
           itemCourseModel?.add(ItemCourseModel.fromJson({
             'image': data?['image'],
             'lectures': Map<String, String>.from(data?['lectures'] ?? {}),
@@ -65,6 +65,21 @@ class HomeCubit extends Cubit<HomeState> {
       emit(GetUserDataSuccess());
     } catch (e) {
       emit(GetUserDataError(e: e.toString()));
+    }
+  }
+
+  Future<void> getAllData() async {
+    emit(GetAllDataLoading());
+    try {
+      await getDataCourses().then((value) async {
+        await getDataUser().then((value) async {
+          await getCourses().then((value) {
+            emit(GetAllDataSuccess());
+          });
+        });
+      });
+    } catch (e) {
+      emit(GetAllDataError());
     }
   }
 }

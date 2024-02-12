@@ -10,3 +10,11 @@ part of 'profile_cubit.dart';
 }
  class ProfileSuccess extends ProfileState {}
 
+class GetVersionLoading extends ProfileState {}
+
+class GetVersionError extends ProfileState {
+  final String message;
+  GetVersionError(this.message);
+}
+
+class GetVersionSuccess extends ProfileState {}

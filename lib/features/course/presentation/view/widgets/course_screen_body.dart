@@ -10,27 +10,12 @@ import 'package:permission_handler/permission_handler.dart';
 class CourseScreenBody extends StatelessWidget {
   const CourseScreenBody({
     super.key,
-    required this.itemsVideo,
-    required this.itemLec,
     this.nameCourse,
   });
-  final Map<String, dynamic> itemsVideo;
-  final Map<String, dynamic> itemLec;
+
   final String? nameCourse;
   @override
   Widget build(BuildContext context) {
-    List<String> nameVideos = [];
-    List<String> urlVideos = [];
-    List<String> nameLectures = [];
-    List<String> urlLectures = [];
-    itemsVideo.forEach((key, value) {
-      nameVideos.add(key);
-      urlVideos.add(value);
-    });
-    itemLec.forEach((key, value) {
-      nameLectures.add(key);
-      urlLectures.add(value);
-    });
     return SingleChildScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
       child: Padding(
@@ -49,8 +34,13 @@ class CourseScreenBody extends StatelessWidget {
                     content: Text(state.e),
                     actions: [
                       TextButton(
-                          onPressed: () {
-                            Permission.manageExternalStorage.request();
+                          onPressed: () async {
+                            bool status = await CourseCubit.get(context)
+                                .requestStoragePermissions();
+                            if (status == false) {
+                              openAppSettings();
+                            }
+                            GoRouter.of(context).pop();
                           },
                           child: const Text('Open Settings'))
                     ],
@@ -69,14 +59,12 @@ class CourseScreenBody extends StatelessWidget {
                       TextButton(
                           onPressed: () async {
                             if (state.e.startsWith('Error in access')) {
-                              var status = await Permission
-                                  .manageExternalStorage
-                                  .request();
-                              if (status.isDenied) {
-                                openAppSettings().then((value) {
-                                  GoRouter.of(context).pop();
-                                });
+                              bool status = await CourseCubit.get(context)
+                                  .requestStoragePermissions();
+                              if (status == false) {
+                                openAppSettings();
                               }
+                              GoRouter.of(context).pop();
                             } else {
                               GoRouter.of(context).pop();
                             }
@@ -87,7 +75,7 @@ class CourseScreenBody extends StatelessWidget {
                 },
               );
             }
-            
+
             if (state is AnalyzeVideoLoading) {
               showDialog(
                 context: context,
@@ -100,13 +88,6 @@ class CourseScreenBody extends StatelessWidget {
               );
             } else if (state is AnalyzeVideoSuccess) {
               GoRouter.of(context).pop();
-            }
-            if (state is AddSuccess) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text('added successfully'),
-                ),
-              );
             }
             if (state is AddError) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -122,10 +103,10 @@ class CourseScreenBody extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CustomExpansionTile(
-                    items: nameLectures,
+                    items: cubit.items?.lectures.keys.toList() ?? [],
                     text: 'Lectures',
-                    url: urlLectures,
-                    title: nameLectures,
+                    url: cubit.items?.lectures.values.toList() ?? [],
+                    title: cubit.items?.lectures.keys.toList() ?? [],
                     nameCourse: nameCourse,
                     cubit: cubit,
                     onTap: () {
@@ -134,9 +115,9 @@ class CourseScreenBody extends StatelessWidget {
                     }),
                 const SizedBox(height: 20),
                 CustomExpansionTile(
-                  items: nameVideos,
-                  url: urlVideos,
-                  title: nameVideos,
+                  items: cubit.items?.videos.keys.toList() ?? [],
+                  url: cubit.items?.videos.values.toList() ?? [],
+                  title: cubit.items?.videos.keys.toList() ?? [],
                   text: 'Videos',
                   cubit: cubit,
                   nameCourse: nameCourse,
@@ -152,7 +133,6 @@ class CourseScreenBody extends StatelessWidget {
                     );
                   },
                 ),
-                
               ],
             );
           },

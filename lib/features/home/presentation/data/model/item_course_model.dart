@@ -27,4 +27,6 @@ class ItemCourseModel {
     });
     return result;
   }
+
+  void add(ItemCourseModel itemCourseModel) {}
 }

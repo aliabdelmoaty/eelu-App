@@ -1,33 +1,42 @@
+import 'dart:async';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class LocalNotificationService {
   static final FlutterLocalNotificationsPlugin _notificationsPlugin =
       FlutterLocalNotificationsPlugin();
-  static int _notificationId = 0;
+  static StreamController<NotificationResponse> streamController =
+      StreamController();
+  static onTap(NotificationResponse notificationResponse) {
+
+    streamController.add(notificationResponse);
+  }
 
   static Future<void> initializeNotifications() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/launcher_icon');
     const initializationSettings = InitializationSettings(
-        android: initializationSettingsAndroid, iOS: null, macOS: null);
-    await _notificationsPlugin.initialize(initializationSettings);
-    (details) {
-      if (details.input != null) {}
-    };
+        android: initializationSettingsAndroid,
+        iOS: DarwinInitializationSettings());
+    await _notificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: onTap,
+      onDidReceiveBackgroundNotificationResponse: onTap,
+    );
   }
 
   Future<void> showDownloadProgressNotification(String progress) async {
     const androidPlatformChannelSpecifics = AndroidNotificationDetails(
         'download_progress_notification_channel', 'Download Progress',
-        importance: Importance.low,
-        priority: Priority.low,
+        importance: Importance.high,
+        priority: Priority.max,
         onlyAlertOnce: true,
         icon: '@mipmap/launcher_icon');
     const notificationDetails = NotificationDetails(
       android: androidPlatformChannelSpecifics,
     );
     await _notificationsPlugin.show(
-      _notificationId++,
+      1,
       'Download Progress',
       'Progress: $progress',
       notificationDetails,
@@ -37,15 +46,15 @@ class LocalNotificationService {
   Future<void> showDownloadSuccessNotification(String name) async {
     const androidPlatformChannelSpecifics = AndroidNotificationDetails(
         'download_success_notification_channel', 'Download Success',
-        importance: Importance.high,
-        priority: Priority.high,
+        importance: Importance.max,
+        priority: Priority.max,
         onlyAlertOnce: true,
         icon: '@mipmap/launcher_icon');
     const notificationDetails = NotificationDetails(
       android: androidPlatformChannelSpecifics,
     );
     await _notificationsPlugin.show(
-      _notificationId++,
+      2,
       'Download Success',
       'download file $name successfully',
       notificationDetails,
@@ -63,7 +72,7 @@ class LocalNotificationService {
       android: androidPlatformChannelSpecifics,
     );
     await _notificationsPlugin.show(
-      _notificationId++,
+      3,
       title,
       body,
       notificationDetails,

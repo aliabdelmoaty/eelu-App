@@ -51,7 +51,10 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> {
       title: Text(widget.text,
           style: Styles.textStyle18.copyWith(
               color: _customTileExpanded ? ColorsApp.blue : Colors.white)),
-      subtitle: Text('${widget.items!.length} ${widget.text} available',
+      subtitle: Text(
+          widget.items != null
+              ? '${widget.items!.length} ${widget.text} available'
+              : '0 available',
           style: Styles.textStyle13.copyWith(
               color: _customTileExpanded ? ColorsApp.blue : Colors.white)),
       trailing: SizedBox(

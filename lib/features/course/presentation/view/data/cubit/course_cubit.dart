@@ -7,6 +7,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:payment/core/utils/notifications.dart';
+import 'package:payment/features/home/presentation/data/model/item_course_model.dart';
 
 import 'package:permission_handler/permission_handler.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
@@ -16,6 +17,7 @@ class CourseCubit extends Cubit<CourseState> {
   CourseCubit() : super(CourseInitial());
   static CourseCubit get(context) => BlocProvider.of(context);
   List<VideoStreamInfo> videoQualities = [];
+  ItemCourseModel? items;
   final Dio _dio = Dio();
   final _yt = YoutubeExplode();
   String? downloadProgress;
@@ -47,24 +49,33 @@ class CourseCubit extends Cubit<CourseState> {
     }
   }
 
-  Future<bool> requestPermission() async {
-    bool mediaPermission = await Permission.accessMediaLocation.isGranted;
-    if (!mediaPermission) {
-      mediaPermission =
-          await Permission.accessMediaLocation.request().isGranted;
-    }
-    bool isPermissionGranted = mediaPermission;
-    if (isPermissionGranted) {
-      return true;
-    } else {
-      return false;
-    }
+  Future<bool> requestStoragePermissions() async {
+    await Permission.storage.request();
+    await Permission.accessMediaLocation.request();
+    await Permission.mediaLibrary.request();
+    await Permission.manageExternalStorage.request();
+    var isIos = Platform.isIOS;
+    if (isIos) await Permission.photos.request();
+    var storageIsGranted = await Permission.storage.isGranted;
+    var accessMediaLocationIsGranted =
+        await Permission.accessMediaLocation.isGranted;
+    var mediaLibraryIsGranted = await Permission.mediaLibrary.isGranted;
+    var manageExternalStorageIsGranted =
+        await Permission.manageExternalStorage.isGranted;
+    var photos = isIos ? await Permission.photos.isGranted : true;
+
+    var isGranted = storageIsGranted &&
+        accessMediaLocationIsGranted &&
+        mediaLibraryIsGranted &&
+        manageExternalStorageIsGranted &&
+        photos;
+    return isGranted;
   }
 
   Future<void> getLocation() async {
     try {
       emit(GetLocationLoading());
-      await requestPermission();
+      await requestStoragePermissions();
       var baseDirectory = '/storage/emulated/0/download/';
       var eduproDirectory = Directory('$baseDirectory/edupro');
       if (!eduproDirectory.existsSync()) {
@@ -101,11 +112,9 @@ class CourseCubit extends Cubit<CourseState> {
 
             emit(DownloadVideoProcess(progress: downloadProgress!));
           });
-          _localNotificationService.showDownloadSuccessNotification(nameVideo!).then((value) {
+
           emit(DownloadVideoSuccess());
-
-          });
-
+          _localNotificationService.showDownloadSuccessNotification(nameVideo!);
         } on DioException catch (e) {
           print(e.toString());
           emit(DownloadVideoError(e: 'Error in download video${e.message}'));
@@ -158,8 +167,8 @@ class CourseCubit extends Cubit<CourseState> {
           print(e.toString());
           emit(DownloadPdfError(e: 'Error in download pdf${e.toString()}'));
         }
-        _localNotificationService.showDownloadSuccessNotification(namePdf!);
         emit(DownloadPdfSuccess());
+        _localNotificationService.showDownloadSuccessNotification(namePdf!);
       } catch (e) {
         print(e.toString());
         emit(DownloadPdfError(e: e.toString()));
@@ -266,4 +275,34 @@ class CourseCubit extends Cubit<CourseState> {
       emit(UploadFileError(e: e.toString()));
     }
   }
+
+  Future<void> getDataCourses({required String nameCourse}) async {
+    try {
+      emit(UpdateDataCoursesLoading());
+
+      FirebaseFirestore.instance
+          .collection('courses')
+          .doc(nameCourse)
+          .snapshots()
+          .listen((DocumentSnapshot snapshot) {
+        if (snapshot.exists) {
+          final Map<String, dynamic>? data =
+              snapshot.data() as Map<String, dynamic>?;
+          items = ItemCourseModel.fromJson({
+            'image': data?['image'],
+            'lectures': Map<String, String>.from(data?['lectures'] ?? {}),
+            'videos': Map<String, String>.from(data?['videos'] ?? {}),
+            'doctors': List<String>.from(data?['doctors'] ?? []),
+          });
+          emit(UpdateDataCoursesSuccess());
+        } else {
+          // If the document does not exist, emit an error state
+          emit(UpdateDataCoursesError(e: "Document does not exist"));
+        }
+      });
+    } catch (e) {
+      emit(UpdateDataCoursesError(e: e.toString()));
+    }
+  }
+
 }

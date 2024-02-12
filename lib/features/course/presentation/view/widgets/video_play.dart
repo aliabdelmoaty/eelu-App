@@ -12,7 +12,7 @@ class VideoPlayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String? videoId = YoutubePlayer.convertUrlToId(urlVideo)!;
+    String? videoId = YoutubePlayer.convertUrlToId(urlVideo);
 
     return Scaffold(
         appBar: AppBar(
@@ -20,26 +20,38 @@ class VideoPlayer extends StatelessWidget {
         ),
         body: Column(
           children: [
-            SizedBox(
-              width: double.infinity,
-              // height: ,
-              child: YoutubePlayer(
-                controller: YoutubePlayerController(
-                  initialVideoId: videoId,
-                  flags: const YoutubePlayerFlags(
-                    autoPlay: true,
-                    mute: false,
-                  ),
-                ),
-                showVideoProgressIndicator: true,
-                progressIndicatorColor: Colors.blueAccent,
-                progressColors: const ProgressBarColors(
-                  playedColor: Colors.blue,
-                  handleColor: Colors.white,
-                ),
-              ),
-            ),
+            YoutubePlay(videoId: videoId),
           ],
         ));
+  }
+}
+
+class YoutubePlay extends StatelessWidget {
+  const YoutubePlay({
+    super.key,
+    required this.videoId,
+  });
+
+  final String? videoId;
+
+  @override
+  @override
+  Widget build(BuildContext context) {
+    return YoutubePlayer(
+      controller: YoutubePlayerController(
+        initialVideoId: videoId ?? '',
+        flags: const YoutubePlayerFlags(
+          autoPlay: true,
+          mute: false,
+        ),
+      ),
+      showVideoProgressIndicator: true,
+      progressIndicatorColor: Colors.blueAccent,
+      width: double.infinity,
+      progressColors: const ProgressBarColors(
+        playedColor: Colors.blue,
+        handleColor: Colors.white,
+      ),
+    );
   }
 }
