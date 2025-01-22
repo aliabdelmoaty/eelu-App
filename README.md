@@ -1,16 +1,49 @@
-# EELU 
+# EduPro - Course Management App
 
-A new Flutter project.
+EduPro is a Flutter-based application designed to manage educational courses, allowing users to view, download, and manage course materials such as videos and PDFs. The app integrates with Firebase for authentication, data storage, and real-time updates.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- **User Authentication**:
+  - Login, Register, and Forgot Password flows.
+  - Firebase Authentication for secure user management.
 
-A few resources to get you started if this is your first Flutter project:
+- **Course Management**:
+  - View courses with embedded videos and PDFs.
+  - Add/Delete videos and PDFs (admin-only).
+  - Real-time updates using Firebase Firestore.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- **File Handling**:
+  - Download videos and PDFs with progress notifications.
+  - YouTube video integration and quality selection.
+  - Firebase Storage for file uploads and management.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- **State Management**:
+  - Uses `Cubit` for efficient state handling.
+
+- **Responsive UI**:
+  - Built with `flutter_screenutil` for adaptive layouts.
+  - Custom widgets for consistent design.
+
+- **Navigation**:
+  - Routing managed by `GoRouter` for deep linking and smooth transitions.
+
+## Technologies Used
+
+- **Frontend**: Flutter
+- **Backend**: Firebase (Auth, Firestore, Storage)
+- **State Management**: Flutter Bloc (Cubit)
+- **Routing**: GoRouter
+- **Dependencies**:
+  - `cloud_firestore`, `firebase_auth`, `firebase_storage`
+  - `dio` for HTTP requests
+  - `file_picker` for file selection
+  - `youtube_explode_dart` for YouTube video parsing
+  - `permission_handler` for storage permissions
+
+## Installation
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/your-username/edupro.git
+   cd edupro
